@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 464 464" style="enable-background:new 0 0 464 464;" xml:space="preserve" width="512px" height="512px" class=""><g><path style="fill:#FFD884;" d="M364.288,120.288c-15.623,15.623-40.953,15.623-56.576,0c-15.623-15.623-15.623-40.953,0-56.576  L272,28L64,236h272l72-72L364.288,120.288z" data-original="#FFD884" class=""/><path style="fill:#FFBF41;" d="M64,236h272l72-72l-296,24L64,236z" data-original="#FFBF41" class=""/><path style="fill:#EC7422;" d="M120,228l120-120l88,88l-32,32H120z" data-original="#EC7422" class=""/><path style="fill:#F6F6E7;" d="M144,228l95.464-96L304,196.536L273.064,228L144,228z" data-original="#F6F6E7" class=""/><path style="fill:#FFD884;" d="M424,332c0-22.091,17.909-40,40-40v-64H0v64c22.091,0,40,17.909,40,40s-17.909,40-40,40v64h464v-64  C441.909,372,424,354.091,424,332z" data-original="#FFD884" class=""/><path style="fill:#FFBF41;" d="M0,436h464v-64c-22.091,0-40-17.909-40-40s17.909-40,40-40v-64L0,436z" data-original="#FFBF41" class=""/><g>
+	<path style="fill:#FFFFFF;" d="M376,252h16v32h-16V252z" data-original="#FFFFFF" class=""/>
+	<path style="fill:#FFFFFF;" d="M376,300h16v32h-16V300z" data-original="#FFFFFF" class=""/>
+	<path style="fill:#FFFFFF;" d="M376,348h16v32h-16V348z" data-original="#FFFFFF" class=""/>
+	<path style="fill:#FFFFFF;" d="M376,396h16v32h-16V396z" data-original="#FFFFFF" class=""/>
+	<path style="fill:#FFFFFF;" d="M72,228h16v32H72V228z" data-original="#FFFFFF" class=""/>
+	<path style="fill:#FFFFFF;" d="M72,276h16v32H72V276z" data-original="#FFFFFF" class=""/>
+	<path style="fill:#FFFFFF;" d="M72,324h16v32H72V324z" data-original="#FFFFFF" class=""/>
+	<path style="fill:#FFFFFF;" d="M72,372h16v32H72V372z" data-original="#FFFFFF" class=""/>
+	<path style="fill:#FFFFFF;" d="M72,420h16v16H72V420z" data-original="#FFFFFF" class=""/>
+</g><path style="fill:#EC7422;" d="M344,380v-96c-13.255,0-24-10.745-24-24H144c0,13.255-10.745,24-24,24v96c13.255,0,24,10.745,24,24  h176C320,390.745,330.745,380,344,380z" data-original="#EC7422" class=""/><path style="fill:#F6F6E7;" d="M328,369.336v-74.672c-10.825,0.503-20.02-7.841-20.568-18.664H156.568  c-0.548,10.823-9.743,19.167-20.568,18.664v74.672c10.825-0.503,20.02,7.841,20.568,18.664h150.864  C307.98,377.177,317.175,368.833,328,369.336z" data-original="#F6F6E7" class=""/></g> </svg>

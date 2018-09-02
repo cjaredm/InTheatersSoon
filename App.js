@@ -1,29 +1,57 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
+import React from "react";
+import {
+  Platform,
+  StatusBar,
+  StyleSheet,
+  View,
+  Dimensions
+} from "react-native";
+import HomeScreen from "./src/HomeScreenComponents/HomeScreen";
+import SettingsScreen from "./src/SettingsScreenComponents/SettingsScreen";
 
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+export const SCREENS = {
+  RESULTS_LIST: "RESULTS_LIST",
+  SETTINGS: "SETTINGS"
+};
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+export default class App extends React.Component {
+  constructor() {
+    super();
+    const dims = Dimensions.get("window");
 
-type Props = {};
-export default class App extends Component<Props> {
+    this.state = {
+      loading: true,
+      activeScreen: SCREENS.RESULTS_LIST,
+      isLoadingComplete: false,
+      user: null,
+      dims
+    };
+  }
+
+  navigateToSettings = () => this.setState({ activeScreen: SCREENS.SETTINGS });
+  navigateToHome = () => this.setState({ activeScreen: SCREENS.RESULTS_LIST });
+  setUser = user => this.setState({ user });
+
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
+        {Platform.OS === "ios" && <StatusBar barStyle="default" />}
+
+        {this.state.activeScreen === SCREENS.RESULTS_LIST && (
+          <HomeScreen
+            openSettings={this.navigateToSettings}
+            dims={this.state.dims}
+          />
+        )}
+
+        {this.state.activeScreen === SCREENS.SETTINGS && (
+          <SettingsScreen
+            user={this.state.user}
+            openHome={this.navigateToHome}
+            setUser={this.setUser}
+            dims={this.state.dims}
+          />
+        )}
       </View>
     );
   }
@@ -32,18 +60,6 @@ export default class App extends Component<Props> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+    backgroundColor: "#fff"
+  }
 });
