@@ -1,70 +1,63 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { StyleSheet, View, Image, Text } from "react-native";
+import styled from "styled-components";
 
-export function SavedMovie(props) {
-  const { color: backgroundColor, title, id, poster, backdrop, dims } = props;
+type Props = {
+  color: string,
+  title: any,
+  backdrop: string,
+  dims: any,
+  id: any
+};
+
+export function SavedMovie(props: Props) {
+  const {
+    color: backgroundColor,
+    title,
+    id,
+    /*poster,*/
+    backdrop,
+    dims
+  } = props;
 
   const posterWidth = 65;
 
-  const styles = StyleSheet.create({
-    container: {
-      width: dims.width,
-      height: 100,
-      backgroundColor,
-      flex: 1,
-      flexDirection: "row"
-    },
-    poster: {
-      height: 100,
-      width: 65,
-      marginHorizontal: "auto",
-      justifyContent: "flex-start"
-    },
-    backdrop: {
-      height: 100,
-      width: 120
-    },
-
-    textContainer: {
-      maxWidth: dims.width - posterWidth - 200,
-      justifyContent: "flex-end"
-    },
-
-    title: {
-      textAlign: "center",
-      color: "white",
-      lineHeight: 16,
-      fontSize: 16,
-      fontWeight: "bold"
-    },
-    date: {
-      textAlign: "center"
-    }
-  });
-
   return (
-    <View style={styles.container}>
-      <Image
-        style={styles.backdrop}
-        source={{ uri: backdrop }}
-        alt="Movie Poster"
-        key={id}
-      />
-      <View styles={styles.textContainer}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.date}>2018-09-15</Text>
-      </View>
-    </View>
+    <Wrapper backgroundColor={backgroundColor} width={dims.width}>
+      <Poster source={{ uri: backdrop }} alt="Movie Poster" key={id} />
+      <TextContainer dimWidth={dims.width} posterWidth={posterWidth}>
+        <Title>{title}</Title>
+        <Date>2018-09-15</Date>
+      </TextContainer>
+    </Wrapper>
   );
 }
 
-SavedMovie.propTypes = {
-  title: PropTypes.string,
-  release_date: PropTypes.string,
-  poster_path: PropTypes.string,
-  id: PropTypes.number,
-  config: PropTypes.object,
-  color: PropTypes.string,
-  dims: PropTypes.object
-};
+const Wrapper = styled.View`
+  width: ${({ width }) => width};
+  height: 100px;
+  background-color: ${({ backgroundColor }) => backgroundColor};
+  flex: 1;
+  flexdirection: row;
+`;
+
+const Poster = styled.Image`
+  height: 100;
+  width: 120;
+`;
+
+const TextContainer = styled.View`
+  max-width: ${({ dimWidth, posterWidth }) => dimWidth - posterWidth - 200};
+  justify-content: flex-end;
+`;
+
+const Title = styled.Text`
+  text-align: center;
+  color: white;
+  line-height: 16px;
+  font-size: 16px;
+  font-weight: bold;
+`;
+
+const Date = styled.Text`
+  text-align: center;
+`;

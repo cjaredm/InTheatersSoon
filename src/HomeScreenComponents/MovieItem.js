@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import {
   StyleSheet,
   View,
@@ -7,9 +6,21 @@ import {
   Image,
   TouchableHighlight
 } from "react-native";
+import styled from "styled-components";
 import AddToCalendar from "./AddToCalendar";
 
-export default function MovieItem(props) {
+type Props = {
+  title: string,
+  release_date: string,
+  poster_path: string,
+  id: any,
+  config: any,
+  getVideoUrl: any,
+  color: string,
+  dims: any
+};
+
+export default function MovieItem(props: Props) {
   const {
     title,
     release_date,
@@ -60,12 +71,12 @@ export default function MovieItem(props) {
   });
 
   return (
-    <View style={{ marginTop: 10 }}>
+    <Wrapper>
       <View style={styles.topTab}>
         <Text style={styles.title}>{title}</Text>
       </View>
       <TouchableHighlight onPress={() => getVideoUrl(id)}>
-        <View style={{ position: "relative" }}>
+        <ViewRelative>
           <Image
             style={styles.poster}
             source={{ uri: poster }}
@@ -77,7 +88,7 @@ export default function MovieItem(props) {
             source={require("../../assets/images/youtubePlayButton.png")}
             alt="Play button"
           />
-        </View>
+        </ViewRelative>
       </TouchableHighlight>
       <AddToCalendar
         releaseDate={release_date}
@@ -85,16 +96,14 @@ export default function MovieItem(props) {
         color={color}
         dims={dims}
       />
-    </View>
+    </Wrapper>
   );
 }
 
-MovieItem.propTypes = {
-  title: PropTypes.string.isRequired,
-  release_date: PropTypes.string.isRequired,
-  poster_path: PropTypes.string,
-  id: PropTypes.number,
-  config: PropTypes.object,
-  color: PropTypes.string,
-  dims: PropTypes.object
-};
+const Wrapper = styled.View`
+  margin-top: 10;
+`;
+
+const ViewRelative = styled.View`
+  position: relative;
+`;

@@ -1,47 +1,51 @@
+// @flow
 import React from "react";
-import PropTypes from "prop-types";
-import moment from "moment";
 import {
   StyleSheet,
   TouchableHighlight,
   View,
   Text,
-  Modal,
-  Dimensions
+  Modal
 } from "react-native";
+import styled from "styled-components";
 
-const buttonStyle = {
-  width: "100%",
-  height: 65,
-  borderTopLeftRadius: 0,
-  borderTopRightRadius: 0,
-  borderBottomLeftRadius: 10,
-  borderBottomRightRadius: 10,
-  overflow: "hidden"
+// const buttonStyle = {
+//   width: "100%",
+//   height: 65,
+//   borderTopLeftRadius: 0,
+//   borderTopRightRadius: 0,
+//   borderBottomLeftRadius: 10,
+//   borderBottomRightRadius: 10,
+//   overflow: "hidden"
+// };
+
+// const dateFormat = "YYYY-MM-DDTHH:mm";
+
+type Props = {
+  color: string,
+  title: string,
+  releaseDate: string,
+  dims: any
 };
 
-const dateFormat = "YYYY-MM-DDTHH:mm";
+type State = {
+  showModal: boolean,
+  error: any
+};
 
-export default class AddToCalendar extends React.Component {
-  static propTypes = {
-    calendarAccess: PropTypes.bool,
-    title: PropTypes.string,
-    releaseDate: PropTypes.string,
-    dims: PropTypes.object
-  };
-
+export default class AddToCalendar extends React.Component<Props, State> {
   state = {
     showModal: false,
     error: null
   };
 
-  toggleShowModal = showModal => {
-    if (!showModal) {
-      this.setState({ showModal: false, error: null });
-    } else {
-      this.setState({ showModal });
-    }
-  };
+  // toggleShowModal = (showModal: showModalProps): void => {
+  //   if (!showModal) {
+  //     this.setState({ showModal: false, error: null });
+  //   } else {
+  //     this.setState({ showModal });
+  //   }
+  // };
 
   // addEvent = async () => {
   //
@@ -98,16 +102,6 @@ export default class AddToCalendar extends React.Component {
       width: "100%",
       marginVertical: 20
     },
-    bottomTab: {
-      width: "100%",
-      height: 70,
-      borderTopLeftRadius: 0,
-      borderTopRightRadius: 0,
-      borderBottomLeftRadius: 10,
-      borderBottomRightRadius: 10,
-      overflow: "hidden",
-      backgroundColor: this.props.color
-    },
     addButton: {
       backgroundColor: "grey",
       borderRadius: 10,
@@ -119,11 +113,7 @@ export default class AddToCalendar extends React.Component {
 
   successModalText = (
     <View>
-      <Text
-        style={{ fontWeight: "bold", textAlign: "center", marginBottom: 10 }}
-      >
-        Calendar Event Added:
-      </Text>
+      <ModalText>Calendar Event Added:</ModalText>
       <Text>Title: {this.props.title}</Text>
       <Text>Date: {this.props.releaseDate}</Text>
       <Text>Alert: 9 AM</Text>
@@ -132,49 +122,58 @@ export default class AddToCalendar extends React.Component {
 
   failureModalText = (
     <View>
-      <Text
-        style={{ fontWeight: "bold", textAlign: "center", marginBottom: 10 }}
-      >
-        Sorry, something went wrong.
-      </Text>
+      <ModalText>Sorry, something went wrong.</ModalText>
     </View>
   );
 
   render() {
     return (
-      <View style={this.styles.bottomTab}>
+      <TabBottom color={this.props.color}>
         <Text style={this.styles.date}>{this.props.releaseDate}</Text>
         <TouchableHighlight
-          onPress={this.addEvent}
+          onPress={() => {
+            console.log("added something");
+          }}
           style={this.styles.addButton}
         >
           <Text style={this.styles.buttonText}>Add To Calendar</Text>
         </TouchableHighlight>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={this.state.showModal}
-        >
+        <Modal animationType="slide" transparent visible={this.state.showModal}>
           <View style={this.styles.modal}>
             {this.state.error ? this.failureModalText : this.successModalText}
             <TouchableHighlight
-              onPress={() => this.toggleShowModal(false)}
+              onPress={() => null}
               style={this.styles.modalButton}
             >
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 20,
-                  textAlign: "center",
-                  lineHeight: 50
-                }}
-              >
-                CLOSE
-              </Text>
+              <ModalCloseText>CLOSE</ModalCloseText>
             </TouchableHighlight>
           </View>
         </Modal>
-      </View>
+      </TabBottom>
     );
   }
 }
+
+const TabBottom = styled.View`
+  width: 100%;
+  height: 70;
+  border-top-left-radius: 0;
+  bordertoprightradius: 0;
+  border-bottom-left-radius: 10;
+  border-bottom-right-radius: 10;
+  overflow: hidden;
+  background-color: ${({ color }) => color};
+`;
+
+const ModalText = styled.Text`
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10;
+`;
+
+const ModalCloseText = styled.Text`
+  color: white,
+  fontSize: 20,
+  textAlign: center,
+  lineHeight: 50
+`;

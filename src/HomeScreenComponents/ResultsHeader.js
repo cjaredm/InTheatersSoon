@@ -1,50 +1,42 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { StyleSheet, View, Text, TouchableHighlight } from "react-native";
-import { SCREENS } from "./HomeScreen";
+import { Text } from "react-native";
+import styled from "styled-components";
 
-export default function ResultsHeader(props) {
-  const {
-    searchValue,
-    inputOnChange,
-    isLoading,
-    setError,
-    requestMovies,
-    error,
-    errorMessage,
-    results,
-    openSettings,
-    resetInput
-  } = props;
+type Props = {
+  results: Array,
+  openSettings: any
+};
+
+export default function ResultsHeader(props: Props) {
+  const { results, openSettings } = props;
 
   return (
-    <View style={{ position: "relative", paddingTop: 25 }}>
-      <Text style={styles.title}>
-        {results ? "Search Results" : "In Theaters Soon"}
-      </Text>
-      <TouchableHighlight
-        style={{ position: "absolute", top: 20, right: 10 }}
-        onPress={openSettings}
-      >
+    <Wrapper>
+      <Title>{results ? "Search Results" : "In Theaters Soon"}</Title>
+      <Button onPress={openSettings}>
         <Text>Login / Sign Up / Account</Text>
-      </TouchableHighlight>
-    </View>
+      </Button>
+    </Wrapper>
   );
 }
 
-const styles = StyleSheet.create({
-  title: {
-    fontSize: 30,
-    lineHeight: 30,
-    height: 30,
-    marginTop: 20,
-    marginBottom: 10,
-    textAlign: "center",
-    textDecorationLine: "underline"
-  }
-});
+const Wrapper = styled.View`
+  position: relative;
+  padding-top: 25px;
+`;
 
-ResultsHeader.propTypes = {
-  openSettings: PropTypes.func,
-  results: PropTypes.array
-};
+const Title = styled.Text`
+  font-size: 30;
+  line-height: 30;
+  height: 30;
+  margin-top: 20;
+  margin-bottom: 10;
+  text-align: "center";
+  text-decoration-line: underline;
+`;
+
+const Button = styled.TouchableHighlight`
+  position: absolute;
+  top: 20px;
+  right: 10px;
+`;

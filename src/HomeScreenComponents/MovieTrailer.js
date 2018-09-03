@@ -1,13 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  TouchableHighlight,
-  WebView
-} from "react-native";
+import { StyleSheet, View, TouchableHighlight, WebView } from "react-native";
+import styled from "styled-components";
 
 const styles = StyleSheet.create({
   container: {
@@ -28,22 +21,19 @@ const styles = StyleSheet.create({
   }
 });
 
-export default function MovieTrailer(props) {
+type Props = {
+  videoKey: string,
+  unsetTrailers: any
+};
+
+export default function MovieTrailer(props: Props) {
   return (
     <View style={styles.container}>
       <TouchableHighlight
         style={styles.closeModal}
         onPress={props.unsetTrailers}
       >
-        <Text
-          style={{
-            textAlign: "center",
-            lineHeight: 50,
-            fontSize: 42
-          }}
-        >
-          &#x2716;
-        </Text>
+        <ExitText>&#x2716;</ExitText>
       </TouchableHighlight>
       <WebView
         source={{ uri: `https://www.youtube.com/embed/${props.videoKey}` }}
@@ -51,3 +41,9 @@ export default function MovieTrailer(props) {
     </View>
   );
 }
+
+const ExitText = styled.Text`
+  text-align: center;
+  line-height: 50px;
+  font-size: 42px;
+`;

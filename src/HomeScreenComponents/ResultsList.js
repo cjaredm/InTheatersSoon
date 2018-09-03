@@ -1,62 +1,44 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { FlatList, Keyboard, Dimensions } from "react-native";
+import styled from "styled-components";
 import { api } from "../requests/http";
 import ResultsHeader from "./ResultsHeader";
 import MovieItem from "./MovieItem";
 
-// const getCalendarPermission = async () => {
-//   const { Calendar, Permissions } = Expo;
-//   const { status } = await Permissions.getAsync(Permissions.CALENDAR);
-//   return status;
-// };
+type Props = {
+  setError: any,
+  setTrailers: any,
+  dims: any
+};
 
-export default class ResultsList extends React.Component {
-  static propTypes = {
-    openSettings: PropTypes.func,
-    dims: PropTypes.object
-  };
+export default class ResultsList extends React.Component<Props> {
+  constructor() {
+    super(props);
 
-  state = {
-    page: null,
-    isLoading: false,
-    results: null,
-    upcomingResults: null,
-    TMDB_configuration: {}
-    // calendarAccess: false,
-  };
-
-  componentDidMount() {
-    this.setState({ isLoading: true });
+    let TMDB_configuration = {};
+    let upcomingResults = [];
 
     api
       .configuration()
-      .then(TMDB_configuration => this.setState({ TMDB_configuration }))
-      .catch(() => {
-        this.props.setError(true);
-        this.setState({ upcomingResults: null });
-      });
+      .then(configurations => (TMDB_configuration = configurations))
+      .catch(() => this.props.setError(true));
 
     api
       .upcoming()
-      .then(({ results, page }) => {
-        const upcomingResults = results.map((item, i) => ({
-          ...item,
-          index: i
-        }));
-        this.setState({ isLoading: false, upcomingResults, page });
-      })
-      .catch(() => {
-        this.setState({ isLoading: false, upcomingResults: null });
-        this.props.setError(true);
-      });
+      .then(
+        ({ results }) =>
+          (upcomingResults = results.map((item, i) => ({
+            ...item,
+            index: i
+          })))
+      )
+      .catch(() => this.props.setError(true));
 
-    // getCalendarPermission().then(status => {
-    //   const { Calendar, Permissions } = Expo;
-    //   if (status === 'granted') {
-    //     this.setState({calendarAccess: true});
-    //   }
-    // });
+    this.state = {
+      page: null,
+      isLoading: false,
+      upcomingResults,
+      TMDB_configuration
+    };
   }
 
   addNextPageOfUpcomingResults = () => {
@@ -64,7 +46,7 @@ export default class ResultsList extends React.Component {
     api
       .upcoming(this.state.page + 1)
       .then(result => {
-        const { results, page } = result;
+        const { results } = result;
         const newUpcomingResults = results.map((item, i) => ({
           ...item,
           index: i
@@ -83,42 +65,12 @@ export default class ResultsList extends React.Component {
       });
   };
 
-  requestMovies = searchValue => {
-    this.setState({ isLoading: true });
-    api
-      .searchMovies(searchValue)
-      .then(({ results, total_results }) => {
-        if (total_results !== 0) {
-          this.props.setError(true);
-          return this.setState({ isLoading: false, results: results });
-        }
-        return this.setState({ isLoading: false });
-      })
-      .catch(error => {
-        this.setState({ isLoading: false, results: null });
-        this.props.setError(true);
-      });
-
-    Keyboard.dismiss();
-  };
-
-  inputOnChange = value => {
-    this.setState({ searchValue: value });
-  };
-
-  resetInput = () => {
-    this.setState({ searchValue: "" });
-    this.requestMovies("");
-  };
-
   render() {
-    const { requestMovies, inputOnChange, resetInput } = this;
-    const { setTrailers, setError, error, openSettings } = this.props;
+    const { setTrailers, openSettings } = this.props;
     const { TMDB_configuration } = this.state;
 
     return (
-      <FlatList
-        style={{ width: "100%", paddingHorizontal: 20 }}
+      <ScrollableList
         underlayColor="red"
         initialNumToRender={3}
         onEndReached={this.addNextPageOfUpcomingResults}
@@ -141,3 +93,8 @@ export default class ResultsList extends React.Component {
     );
   }
 }
+
+const ScrollableList = styled.FlatList`
+  width: 100%;
+  padding: 0 20px;
+`;

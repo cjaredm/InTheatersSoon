@@ -1,16 +1,16 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { StyleSheet, View, Modal } from "react-native";
+import styled from "styled-components";
 import { api } from "../requests/http";
 import ResultsList from "./ResultsList";
 import MovieTrailer from "./MovieTrailer";
 
-export default class HomeScreen extends React.Component {
-  static propTypes = {
-    openSettings: PropTypes.func.isRequired,
-    dims: PropTypes.object
-  };
+type Props = {
+  openSettings: any,
+  dims: any
+};
 
+export default class HomeScreen extends React.Component<Props> {
   constructor(props) {
     super(props);
 
@@ -33,7 +33,7 @@ export default class HomeScreen extends React.Component {
         // response = {id, results: [{id, key, name}]}
         return this.setState({ trailers: response.results, error: false });
       })
-      .catch(error => this.setState({ error: true }));
+      .catch(() => this.setState({ error: true }));
   };
 
   unsetTrailers = () => this.setState({ trailers: null });
@@ -58,7 +58,7 @@ export default class HomeScreen extends React.Component {
           visible={Boolean(this.state.trailers)}
           supportedOrientations={["landscape-right"]}
         >
-          <View style={{ flex: 1 }}>
+          <FlexView>
             <MovieTrailer
               videoKey={
                 this.state.trailers &&
@@ -66,7 +66,7 @@ export default class HomeScreen extends React.Component {
               }
               unsetTrailers={this.unsetTrailers}
             />
-          </View>
+          </FlexView>
         </Modal>
       </View>
     );
@@ -89,3 +89,7 @@ const styles = StyleSheet.create({
     padding: 0
   }
 });
+
+const FlexView = styled.View`
+  flex: 1;
+`;

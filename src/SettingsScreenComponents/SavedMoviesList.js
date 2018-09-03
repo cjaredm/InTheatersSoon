@@ -1,7 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { FlatList, View } from "react-native";
 import { SavedMovie } from "./SavedMovie";
+import styled from "styled-components";
 
 const savedMovies = [1, 2, 3, 4, 5].map(id => ({
   id,
@@ -10,21 +9,22 @@ const savedMovies = [1, 2, 3, 4, 5].map(id => ({
   backdrop: "https://image.tmdb.org/t/p/w300/5qxePyMYDisLe8rJiBYX8HKEyv2.jpg"
 }));
 
-export class SavedMovieList extends React.Component {
+type Props = {
+  dims: any
+};
+
+export class SavedMovieList extends React.Component<Props> {
   static propTypes = {
     dims: PropTypes.object
   };
 
   render() {
     return (
-      <FlatList
-        style={{ width: "100%" }}
+      <ScrollableList
         underlayColor="red"
-        onEndReached={() => {}}
         onEndReachedThreshold={3}
         data={savedMovies}
         keyExtractor={(item, index) => `${index}`}
-        ListHeaderComponent={<View />}
         renderItem={({ item }) => {
           return (
             <SavedMovie
@@ -38,3 +38,7 @@ export class SavedMovieList extends React.Component {
     );
   }
 }
+
+const ScrollableList = styled.FlatList`
+  width: 100%;
+`;

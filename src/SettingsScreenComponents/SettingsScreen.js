@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import {
   StyleSheet,
   View,
@@ -12,15 +11,16 @@ import {
 } from "react-native";
 import firebase, { auth } from "../firebase";
 import { SavedMovieList } from "./SavedMoviesList";
+import styled from "styled-components";
 
-export default class SettingsScreen extends React.Component {
-  static propTypes = {
-    setUser: PropTypes.func,
-    user: PropTypes.object,
-    openHome: PropTypes.func,
-    dims: PropTypes.object
-  };
+type Props = {
+  setUser: any,
+  // user: any,
+  // openHome: any,
+  dims: any
+};
 
+export default class SettingsScreen extends React.Component<Props> {
   state = {
     email: "email1@email.com",
     password: "12345678",
@@ -31,7 +31,7 @@ export default class SettingsScreen extends React.Component {
 
   setEmail = email => this.setState({ email });
   setPassword = password => this.setState({ password });
-  showModal = () => this.setState({ showModal: true });
+  // showModal = () => this.setState({ showModal: true });
   closeModal = () => this.setState({ showModal: false, error: "" });
 
   onLoginPress = () => {
@@ -85,7 +85,7 @@ export default class SettingsScreen extends React.Component {
     Keyboard.dismiss();
   };
 
-  onUpdatePress = () => {
+  /* onUpdatePress = () => {
     this.setState({ loading: true });
     const currentUser = firebase.auth().currentUser;
     currentUser
@@ -101,6 +101,7 @@ export default class SettingsScreen extends React.Component {
 
     Keyboard.dismiss();
   };
+  */
 
   modalWidth = this.props.dims.width - 100;
 
@@ -160,7 +161,7 @@ export default class SettingsScreen extends React.Component {
   });
 
   render() {
-    const { user, openHome } = this.props;
+    // const { user, openHome } = this.props;
     const modalText = this.state.error
       ? this.state.error
       : "Ta'Done!! Told you it would be easy. Now go save some movies.";
@@ -206,33 +207,16 @@ export default class SettingsScreen extends React.Component {
         <Modal
           style={this.styles.modal}
           animationType="slide"
-          transparent={true}
           visible={this.state.showModal}
+          transparent
         >
           <View style={this.styles.modal}>
-            <Text
-              style={{
-                fontWeight: "bold",
-                textAlign: "center",
-                marginBottom: 10
-              }}
-            >
-              {modalText}
-            </Text>
+            <ModalText>{modalText}</ModalText>
             <TouchableHighlight
               onPress={this.closeModal}
               style={this.styles.modalButton}
             >
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 20,
-                  textAlign: "center",
-                  lineHeight: 50
-                }}
-              >
-                CLOSE
-              </Text>
+              <ModalCloseText>CLOSE</ModalCloseText>
             </TouchableHighlight>
           </View>
         </Modal>
@@ -240,3 +224,16 @@ export default class SettingsScreen extends React.Component {
     );
   }
 }
+
+const ModalText = styled.Text`
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10;
+`;
+
+const ModalCloseText = styled.Text`
+  color: white;
+  font-size: 20px;
+  text-align: center;
+  line-height: 50px;
+`;
