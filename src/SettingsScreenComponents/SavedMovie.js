@@ -37,7 +37,7 @@ const Wrapper = styled.View`
   height: 100px;
   background-color: ${({ backgroundColor }) => backgroundColor};
   flex: 1;
-  flexdirection: row;
+  flex-direction: row;
 `;
 
 const Poster = styled.Image`

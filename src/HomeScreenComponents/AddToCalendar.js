@@ -158,7 +158,7 @@ const TabBottom = styled.View`
   width: 100%;
   height: 70;
   border-top-left-radius: 0;
-  bordertoprightradius: 0;
+  border-top-right-radius: 0;
   border-bottom-left-radius: 10;
   border-bottom-right-radius: 10;
   overflow: hidden;

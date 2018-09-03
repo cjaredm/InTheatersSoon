@@ -40,15 +40,16 @@ export default class HomeScreen extends React.Component<Props> {
 
   render() {
     const { setError, setTrailers } = this;
+    const { dims, openSettings } = this.props;
 
     return (
       <View style={styles.container}>
         <ResultsList
-          openSettings={this.props.openSettings}
+          openSettings={openSettings}
           setError={setError}
           setTrailers={setTrailers}
           error={this.state.error}
-          dims={this.props.dims}
+          dims={dims}
         />
 
         <Modal

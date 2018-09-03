@@ -14,10 +14,6 @@ type Props = {
 };
 
 export class SavedMovieList extends React.Component<Props> {
-  static propTypes = {
-    dims: PropTypes.object
-  };
-
   render() {
     return (
       <ScrollableList

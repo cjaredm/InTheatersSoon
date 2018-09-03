@@ -31,7 +31,7 @@ const Title = styled.Text`
   height: 30;
   margin-top: 20;
   margin-bottom: 10;
-  text-align: "center";
+  text-align: center;
   text-decoration-line: underline;
 `;
 

@@ -12,34 +12,44 @@ type Props = {
 
 export default class ResultsList extends React.Component<Props> {
   constructor() {
-    super(props);
-
-    let TMDB_configuration = {};
-    let upcomingResults = [];
-
-    api
-      .configuration()
-      .then(configurations => (TMDB_configuration = configurations))
-      .catch(() => this.props.setError(true));
-
-    api
-      .upcoming()
-      .then(
-        ({ results }) =>
-          (upcomingResults = results.map((item, i) => ({
-            ...item,
-            index: i
-          })))
-      )
-      .catch(() => this.props.setError(true));
+    super();
 
     this.state = {
       page: null,
-      isLoading: false,
-      upcomingResults,
-      TMDB_configuration
+      isLoading: true,
+      upcomingResults: [],
+      TMDB_configuration: {}
     };
   }
+
+  componentDidMount() {
+    Promise.all([this.getConfig(), this.getUpcomingMovies()]).then(
+      ([TMDB_configuration, upcomingResults]) => {
+        console.log(upcomingResults);
+        return this.setState({
+          TMDB_configuration,
+          upcomingResults
+        });
+      }
+    );
+  }
+
+  getConfig = () =>
+    api
+      .configuration()
+      .then(configurations => configurations)
+      .catch(error => error);
+
+  getUpcomingMovies = () =>
+    api
+      .upcoming()
+      .then(({ results }) => {
+        return results.map((item, i) => ({
+          ...item,
+          index: i
+        }));
+      })
+      .catch(error => error);
 
   addNextPageOfUpcomingResults = () => {
     this.setState({ isLoading: true });
