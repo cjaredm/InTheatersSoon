@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  TouchableHighlight
-} from "react-native";
+import { TouchableHighlight } from "react-native";
 import styled from "styled-components";
 import AddToCalendar from "./AddToCalendar";
 
@@ -36,55 +30,16 @@ export default function MovieItem(props: Props) {
     config.images.poster_sizes[4]
   }${poster_path}`;
 
-  const styles = StyleSheet.create({
-    topTab: {
-      minHeight: 50,
-      width: "100%",
-      borderTopLeftRadius: 10,
-      borderTopRightRadius: 10,
-      backgroundColor: color,
-      paddingVertical: 15
-    },
-
-    title: {
-      textAlign: "center",
-      width: "100%",
-      color: "white",
-      lineHeight: 20,
-      fontSize: 20,
-      paddingHorizontal: 15,
-      fontWeight: "bold"
-    },
-
-    poster: {
-      height: 500,
-      marginHorizontal: "auto"
-    },
-    playButton: {
-      height: 150,
-      width: "50%",
-      position: "absolute",
-      top: 500 / 2 - 150 / 2,
-      left: (dims.width - 40) / 2 - 80,
-      opacity: 0.85
-    }
-  });
-
   return (
     <Wrapper>
-      <View style={styles.topTab}>
-        <Text style={styles.title}>{title}</Text>
-      </View>
+      <TopTab color={color}>
+        <MovieTitle>{title}</MovieTitle>
+      </TopTab>
       <TouchableHighlight onPress={() => getVideoUrl(id)}>
         <ViewRelative>
-          <Image
-            style={styles.poster}
-            source={{ uri: poster }}
-            alt="Movie Poster"
-            key={id}
-          />
-          <Image
-            style={styles.playButton}
+          <Poster source={{ uri: poster }} alt="Movie Poster" key={id} />
+          <PlayButton
+            width={dims.width}
             source={require("../../assets/images/youtubePlayButton.png")}
             alt="Play button"
           />
@@ -101,9 +56,43 @@ export default function MovieItem(props: Props) {
 }
 
 const Wrapper = styled.View`
-  margin-top: 10;
+  margin-top: 10px;
 `;
 
 const ViewRelative = styled.View`
   position: relative;
+`;
+
+const TopTab = styled.View`
+  min-height: 50px;
+  width: 100%;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  background-color: ${({ color }) => color};
+  padding: 15px 0;
+`;
+
+const MovieTitle = styled.Text`
+  text-align: center;
+  width: 100%;
+  color: white;
+  line-height: 20px;
+  font-size: 20px;
+  padding: 0 15px;
+  font-weight: bold;
+`;
+
+const Poster = styled.Image`
+  height: 500px;
+  width: 100%;
+  margin: 0 auto;
+`;
+
+const PlayButton = styled.Image`
+  height: 150px;
+  width: 50%;
+  position: absolute;
+  top: ${500 / 2 - 150 / 2}px;
+  left: ${({ width }) => (width - 40) / 2 - 80}px;
+  opacity: 0.85;
 `;

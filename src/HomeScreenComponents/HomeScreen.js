@@ -1,5 +1,4 @@
 import React from "react";
-import { StyleSheet, View, Modal } from "react-native";
 import styled from "styled-components";
 import { api } from "../requests/http";
 import ResultsList from "./ResultsList";
@@ -43,7 +42,7 @@ export default class HomeScreen extends React.Component<Props> {
     const { dims, openSettings } = this.props;
 
     return (
-      <View style={styles.container}>
+      <Wrapper>
         <ResultsList
           openSettings={openSettings}
           setError={setError}
@@ -52,8 +51,7 @@ export default class HomeScreen extends React.Component<Props> {
           dims={dims}
         />
 
-        <Modal
-          style={styles.modal}
+        <ModalConatiner
           animationType="slide"
           transparent={false}
           visible={Boolean(this.state.trailers)}
@@ -68,28 +66,27 @@ export default class HomeScreen extends React.Component<Props> {
               unsetTrailers={this.unsetTrailers}
             />
           </FlexView>
-        </Modal>
-      </View>
+        </ModalConatiner>
+      </Wrapper>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    marginTop: 20,
-    position: "relative",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white"
-  },
-  modal: {
-    width: "100%",
-    height: "100%",
-    margin: 0,
-    padding: 0
-  }
-});
+const Wrapper = styled.View`
+  width: 100%;
+  margin-top: 20;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+`;
+
+const ModalConatiner = styled.Modal`
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+`;
 
 const FlexView = styled.View`
   flex: 1;

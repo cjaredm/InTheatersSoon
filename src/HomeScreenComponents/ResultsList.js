@@ -10,7 +10,14 @@ type Props = {
   dims: any
 };
 
-export default class ResultsList extends React.Component<Props> {
+type State = {
+  page: any,
+  isLoading: boolean,
+  upcomingResults: Array,
+  TMDB_configuration: any
+};
+
+export default class ResultsList extends React.Component<Props, State> {
   constructor() {
     super();
 

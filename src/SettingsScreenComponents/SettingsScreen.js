@@ -1,14 +1,5 @@
 import React from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  TouchableHighlight,
-  Modal,
-  Button,
-  Keyboard
-} from "react-native";
+import { View, Button, Keyboard } from "react-native";
 import firebase, { auth } from "../firebase";
 import { SavedMovieList } from "./SavedMoviesList";
 import styled from "styled-components";
@@ -85,80 +76,7 @@ export default class SettingsScreen extends React.Component<Props> {
     Keyboard.dismiss();
   };
 
-  /* onUpdatePress = () => {
-    this.setState({ loading: true });
-    const currentUser = firebase.auth().currentUser;
-    currentUser
-      .updateProfile({ id: 1, savedMovies: ["movie1", "movie2", "movie3"] })
-      .then(response => {
-        console.log("Update successful", firebase.auth());
-        this.setState({ loading: false });
-      })
-      .catch(error => {
-        console.log(error);
-        this.setState({ error, loading: false, showModal: true });
-      });
-
-    Keyboard.dismiss();
-  };
-  */
-
   modalWidth = this.props.dims.width - 100;
-
-  styles = StyleSheet.create({
-    container: {
-      width: "100%",
-      marginTop: 100,
-      position: "relative",
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "white"
-    },
-
-    header: {
-      fontSize: 20,
-      textAlign: "center",
-      width: 300
-    },
-    description: {
-      fontSize: 16,
-      textAlign: "center",
-      width: 320,
-      marginBottom: 20
-    },
-
-    input: {
-      width: "85%",
-      height: 40,
-      paddingHorizontal: 15,
-      marginVertical: 10,
-      borderRadius: 8,
-      borderWidth: 1,
-      borderColor: "black"
-    },
-
-    modal: {
-      width: this.modalWidth,
-      minHeight: 150,
-      maxHeight: 220,
-      marginHorizontal: "auto",
-      padding: 30,
-      backgroundColor: "white",
-      borderRadius: 10,
-      borderWidth: 1,
-      borderColor: "black",
-      position: "absolute",
-      top: this.props.dims.height / 2 - 110,
-      left: this.props.dims.width / 2 - this.modalWidth / 2
-    },
-    modalButton: {
-      backgroundColor: "gold",
-      borderRadius: 10,
-      height: 50,
-      width: "100%",
-      marginVertical: 20
-    }
-  });
 
   render() {
     // const { user, openHome } = this.props;
@@ -167,68 +85,119 @@ export default class SettingsScreen extends React.Component<Props> {
       : "Ta'Done!! Told you it would be easy. Now go save some movies.";
 
     return (
-      <View style={this.styles.container}>
+      <Wrapper>
         <SavedMovieList dims={this.props.dims} />
 
-        <Text style={this.styles.header}>
+        <Header>
           We'd love to send you notifications when your saved movies are in
           theaters soon.
-        </Text>
-        <Text style={this.styles.description}>
+        </Header>
+        <Description>
           Little thing though, you gotta setup an account. Super easy, barely an
           inconvenience.
-        </Text>
+        </Description>
 
-        <TextInput
-          placeholder="Email..."
+        <Input
           onTextChange={value => this.setEmail(value)}
+          placeholder="Email..."
           value={this.state.email}
-          style={this.styles.input}
         />
-        <TextInput
-          placeholder="Password..."
+        <Input
           onTextChange={value => this.setPassword(value)}
+          placeholder="Password..."
           value={this.state.password}
-          style={this.styles.input}
         />
         <Button
-          title="Login"
+          accessibilityLabel="Create Account"
           onPress={this.onLoginPress}
+          title="Login"
           color="red"
-          accessibilityLabel="Create Account"
         />
         <Button
-          title="Create Account"
-          onPress={this.onCreateAccountPress}
-          color="blue"
           accessibilityLabel="Create Account"
+          onPress={this.onCreateAccountPress}
+          title="Create Account"
+          color="blue"
         />
 
         <Modal
-          style={this.styles.modal}
-          animationType="slide"
+          dims={this.props.dims}
+          modalWidth={this.modalWidth}
           visible={this.state.showModal}
+          animationType="slide"
           transparent
         >
-          <View style={this.styles.modal}>
+          <View>
             <ModalText>{modalText}</ModalText>
-            <TouchableHighlight
-              onPress={this.closeModal}
-              style={this.styles.modalButton}
-            >
+            <ModalButton onPress={this.closeModal}>
               <ModalCloseText>CLOSE</ModalCloseText>
-            </TouchableHighlight>
+            </ModalButton>
           </View>
         </Modal>
-      </View>
+      </Wrapper>
     );
   }
 }
 
+const Wrapper = styled.View`
+  width: 100%;
+  margin-top: 100px;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+`;
+
+const Header = styled.Text`
+  font-size: 20;
+  text-align: center;
+  width: 300px;
+`;
+
+const Description = styled.Text`
+  font-size: 16px;
+  text-align: center;
+  width: 320px;
+  margin-bottom: 20px;
+`;
+
+const Input = styled.TextInput`
+  width: 85%;
+  height: 40px;
+  padding: 0 15px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border-width: 1px;
+  border-color: black;
+`;
+
+const Modal = styled.Modal`
+  width: this.modalWidth;
+  min-height: 150px;
+  max-height: 220px;
+  margin: 0 auto;
+  padding: 30;
+  background-color: white;
+  border-radius: 10px;
+  border-width: 1px;
+  border-color: black;
+  position: absolute;
+  top: ${({ dims }) => dims.height / 2 - 110}px;
+  left: ${({ dims, modalWidth }) => dims.width / 2 - modalWidth / 2}px;
+`;
+
+const ModalButton = styled.TouchableHighlight`
+  background-color: gold;
+  border-radius: 10px;
+  height: 50px;
+  width: 100%;
+  margin: 20px 0;
+`;
+
 const ModalText = styled.Text`
   font-weight: bold;
   text-align: center;
-  margin-bottom: 10;
+  margin-bottom: 10px;
 `;
 
 const ModalCloseText = styled.Text`

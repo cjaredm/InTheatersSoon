@@ -10,29 +10,28 @@ const savedMovies = [1, 2, 3, 4, 5].map(id => ({
 }));
 
 type Props = {
-  dims: any
+  dims: any,
+  savedMovies?: Array
 };
 
-export class SavedMovieList extends React.Component<Props> {
-  render() {
-    return (
-      <ScrollableList
-        underlayColor="red"
-        onEndReachedThreshold={3}
-        data={savedMovies}
-        keyExtractor={(item, index) => `${index}`}
-        renderItem={({ item }) => {
-          return (
-            <SavedMovie
-              {...item}
-              color={item.id % 2 === 0 ? "red" : "gold"}
-              dims={this.props.dims}
-            />
-          );
-        }}
-      />
-    );
-  }
+export function SavedMovieList(props: Props) {
+  return (
+    <ScrollableList
+      underlayColor="red"
+      onEndReachedThreshold={3}
+      data={savedMovies}
+      keyExtractor={(item, index) => `${index}`}
+      renderItem={({ item }) => {
+        return (
+          <SavedMovie
+            {...item}
+            color={item.id % 2 === 0 ? "red" : "gold"}
+            dims={props.dims}
+          />
+        );
+      }}
+    />
+  );
 }
 
 const ScrollableList = styled.FlatList`

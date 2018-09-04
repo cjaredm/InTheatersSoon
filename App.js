@@ -1,11 +1,6 @@
 import React from "react";
-import {
-  Platform,
-  StatusBar,
-  StyleSheet,
-  View,
-  Dimensions
-} from "react-native";
+import { Platform, StatusBar, Dimensions } from "react-native";
+import styled from "styled-components";
 import HomeScreen from "./src/HomeScreenComponents/HomeScreen";
 import SettingsScreen from "./src/SettingsScreenComponents/SettingsScreen";
 
@@ -34,7 +29,7 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <Wrapper>
         {Platform.OS === "ios" && <StatusBar barStyle="default" />}
 
         {this.state.activeScreen === SCREENS.RESULTS_LIST && (
@@ -52,14 +47,12 @@ export default class App extends React.Component {
             dims={this.state.dims}
           />
         )}
-      </View>
+      </Wrapper>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff"
-  }
-});
+const Wrapper = styled.View`
+  flex: 1;
+  backgroundcolor: #fff;
+`;
