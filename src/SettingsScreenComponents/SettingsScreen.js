@@ -76,13 +76,13 @@ export default class SettingsScreen extends React.Component<Props> {
     Keyboard.dismiss();
   };
 
-  modalWidth = this.props.dims.width - 100;
-
   render() {
     // const { user, openHome } = this.props;
     const modalText = this.state.error
       ? this.state.error
       : "Ta'Done!! Told you it would be easy. Now go save some movies.";
+
+    const modalWidth = this.props.dims.width - 100;
 
     return (
       <Wrapper>
@@ -122,7 +122,7 @@ export default class SettingsScreen extends React.Component<Props> {
 
         <Modal
           dims={this.props.dims}
-          modalWidth={this.modalWidth}
+          modalWidth={modalWidth}
           visible={this.state.showModal}
           animationType="slide"
           transparent
@@ -172,11 +172,11 @@ const Input = styled.TextInput`
 `;
 
 const Modal = styled.Modal`
-  width: this.modalWidth;
+  width: ${({ modalWidth }) => modalWidth};
   min-height: 150px;
   max-height: 220px;
   margin: 0 auto;
-  padding: 30;
+  padding: 30px;
   background-color: white;
   border-radius: 10px;
   border-width: 1px;
