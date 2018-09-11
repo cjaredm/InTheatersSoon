@@ -40,7 +40,7 @@ export default function MovieItem(props: Props) {
           <Poster source={{ uri: poster }} alt="Movie Poster" key={id} />
           <PlayButton
             width={dims.width}
-            source={require("../../assets/images/youtubePlayButton.png")}
+            source={require("../../../assets/images/youtubePlayButton.png")}
             alt="Play button"
           />
         </ViewRelative>

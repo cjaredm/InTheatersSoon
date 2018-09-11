@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Button, Keyboard } from "react-native";
-import firebase, { auth } from "../firebase";
+import firebase, { auth } from "../../firebase";
 import { SavedMovieList } from "./SavedMoviesList";
 import styled from "styled-components";
 

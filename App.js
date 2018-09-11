@@ -1,8 +1,8 @@
 import React from "react";
 import { Platform, StatusBar, Dimensions } from "react-native";
 import styled from "styled-components";
-import HomeScreen from "./src/HomeScreenComponents/HomeScreen";
-import SettingsScreen from "./src/SettingsScreenComponents/SettingsScreen";
+import HomeScreen from "./src/screens/HomeScreenComponents/HomeScreen";
+import SettingsScreen from "./src/screens/SettingsScreenComponents/SettingsScreen";
 
 export const SCREENS = {
   RESULTS_LIST: "RESULTS_LIST",
@@ -54,5 +54,5 @@ export default class App extends React.Component {
 
 const Wrapper = styled.View`
   flex: 1;
-  backgroundcolor: #fff;
+  background-color: #fff;
 `;

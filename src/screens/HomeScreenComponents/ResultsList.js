@@ -1,6 +1,7 @@
+// @flow
 import React from "react";
 import styled from "styled-components";
-import { api } from "../requests/http";
+import { api } from "../../requests/http";
 import ResultsHeader from "./ResultsHeader";
 import MovieItem from "./MovieItem";
 
