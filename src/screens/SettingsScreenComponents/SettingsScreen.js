@@ -176,7 +176,7 @@ const Modal = styled.Modal`
   min-height: 150px;
   max-height: 220px;
   margin: 0 auto;
-  padding: 30;
+  padding: 30px;
   background-color: white;
   border-radius: 10px;
   border-width: 1px;

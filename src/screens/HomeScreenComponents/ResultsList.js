@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { api } from "../../requests/http";
 import ResultsHeader from "./ResultsHeader";
 import MovieItem from "./MovieItem";
+import { COLORS } from "../../styles/theme";
 
 type Props = {
   setError: any,
@@ -95,15 +96,13 @@ export default class ResultsList extends React.Component<Props, State> {
         onEndReachedThreshold={3}
         data={this.state.results || this.state.upcomingResults}
         keyExtractor={(item, index) => `${index}`}
-        ListHeaderComponent={
-          <ResultsHeader {...this.state} openSettings={openSettings} />
-        }
+        ListHeaderComponent={<ResultsHeader openSettings={openSettings} />}
         renderItem={({ item }) => (
           <MovieItem
             {...item}
             config={TMDB_configuration}
             getVideoUrl={setTrailers}
-            color={item.index % 2 === 0 ? "red" : "gold"}
+            color={item.index % 2 === 0 ? COLORS.teal : COLORS.grey}
             dims={this.props.dims}
           />
         )}
@@ -115,4 +114,5 @@ export default class ResultsList extends React.Component<Props, State> {
 const ScrollableList = styled.FlatList`
   width: 100%;
   padding: 0 20px;
+  background-color: ${COLORS.background};
 `;
