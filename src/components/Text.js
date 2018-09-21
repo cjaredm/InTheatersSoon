@@ -26,5 +26,5 @@ export const Text: ComponentType<Props> = styled.Text`
 // $FlowFixMe
 Text.defaultProps = {
   sizeType: "body",
-  colorType: "teal"
+  colorType: "white"
 };

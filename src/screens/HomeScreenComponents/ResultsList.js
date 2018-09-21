@@ -102,7 +102,7 @@ export default class ResultsList extends React.Component<Props, State> {
             {...item}
             config={TMDB_configuration}
             getVideoUrl={setTrailers}
-            color={item.index % 2 === 0 ? COLORS.teal : COLORS.grey}
+            color={item.index % 2 === 0 ? COLORS.primary : COLORS.secondary}
             dims={this.props.dims}
           />
         )}

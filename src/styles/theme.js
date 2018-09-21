@@ -15,11 +15,13 @@ const ThemeTwo = {
 };
 
 export const COLORS = {
-  background: "rgba(251, 251, 255, 1)",
+  background: "black",
+  white: "rgba(255, 255, 255, 1)",
   normal: "rgba(11, 79, 108, 1)",
-  teal: "rgba(1, 186, 239, 1)",
-  grey: "rgba(117, 117, 117, 1)",
-  red: "#e63053"
+  primary: "rgba(39, 111, 191, 1)",
+  secondary: "rgba(146, 220, 229, 1)",
+  alert: "#e63053",
+  warning: "orange"
 };
 
 export const FONT_SIZES = {
