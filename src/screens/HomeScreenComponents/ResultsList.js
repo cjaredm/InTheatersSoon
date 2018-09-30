@@ -7,16 +7,17 @@ import MovieItem from "./MovieItem";
 import { COLORS } from "../../styles/theme";
 
 type Props = {
-  setError: any,
-  setTrailers: any,
-  dims: any
+  setError: Function,
+  setTrailers: Function,
+  openSettings: any,
+  dims: { width: number, height: number }
 };
 
 type State = {
-  page: any,
+  page: null | number,
   isLoading: boolean,
-  upcomingResults: Array,
-  TMDB_configuration: any
+  upcomingResults: Array<{}>,
+  TMDB_configuration: Object
 };
 
 export default class ResultsList extends React.Component<Props, State> {
@@ -79,7 +80,7 @@ export default class ResultsList extends React.Component<Props, State> {
         });
       })
       .catch(() => {
-        this.setState({ isLoading: false, upcomingResults: null });
+        this.setState({ isLoading: false, upcomingResults: [] });
         this.props.setError(true);
       });
   };

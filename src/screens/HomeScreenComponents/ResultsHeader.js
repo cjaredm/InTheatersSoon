@@ -3,8 +3,7 @@ import styled from "styled-components";
 import { Text } from "../../components/Text";
 
 type Props = {
-  results: Array,
-  openSettings: any
+  openSettings: Function
 };
 
 export default function ResultsHeader(props: Props) {

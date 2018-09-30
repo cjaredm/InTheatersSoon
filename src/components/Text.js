@@ -5,7 +5,7 @@ import { COLORS, FONT_SIZES, FONT_SIZE_TYPES } from "../styles/theme";
 
 type Props = {
   colorType?: $Keys<typeof COLORS>,
-  sizeType?: $Keys<typeof FONT_TYPE_SIZES>,
+  sizeType?: $Keys<typeof FONT_SIZE_TYPES>,
   size?: $Keys<typeof FONT_SIZES> | string | number,
   fontWeight?: string | number,
   textAlign?: string

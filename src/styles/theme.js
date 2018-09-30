@@ -1,3 +1,4 @@
+/*
 const ThemeOne = {
   green: "rgba(240, 58, 71, 1)",
   darkBlue: "rgba(175, 91, 91, 1)",
@@ -13,6 +14,7 @@ const ThemeTwo = {
   white: "rgba(238, 229, 233, 1)",
   grey: "rgba(124, 124, 124, 1)"
 };
+*/
 
 export const COLORS = {
   background: "black",

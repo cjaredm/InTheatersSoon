@@ -7,11 +7,11 @@ type Props = {
   title: string,
   release_date: string,
   poster_path: string,
-  id: any,
-  config: any,
-  getVideoUrl: any,
+  id: number | string,
+  config: Object,
+  getVideoUrl: Function,
   color: string,
-  dims: any
+  dims: Object
 };
 
 export default function MovieItem(props: Props) {
