@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Button, Keyboard } from "react-native";
-import firebase, { auth } from "../firebase";
+import firebase, { auth } from "../../firebase";
 import { SavedMovieList } from "./SavedMoviesList";
 import styled from "styled-components";
 
@@ -176,7 +176,7 @@ const Modal = styled.Modal`
   min-height: 150px;
   max-height: 220px;
   margin: 0 auto;
-  padding: 30;
+  padding: 30px;
   background-color: white;
   border-radius: 10px;
   border-width: 1px;

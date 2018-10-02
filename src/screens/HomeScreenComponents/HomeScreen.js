@@ -1,6 +1,7 @@
+// @flow
 import React from "react";
 import styled from "styled-components";
-import { api } from "../requests/http";
+import { api } from "../../requests/http";
 import ResultsList from "./ResultsList";
 import MovieTrailer from "./MovieTrailer";
 
@@ -9,19 +10,20 @@ type Props = {
   dims: any
 };
 
-export default class HomeScreen extends React.Component<Props> {
-  constructor(props) {
-    super(props);
+type State = {
+  error: boolean,
+  trailers: any | void
+};
 
-    this.state = {
-      error: false,
-      trailers: null
-    };
-  }
+export default class HomeScreen extends React.Component<Props, State> {
+  state = {
+    error: false,
+    trailers: null
+  };
 
-  setError = error => this.setState({ error });
+  setError = (error: boolean) => this.setState({ error });
 
-  setTrailers = id => {
+  setTrailers = (id: number | string) => {
     if (!id) {
       return this.setState({ trailers: null });
     }
