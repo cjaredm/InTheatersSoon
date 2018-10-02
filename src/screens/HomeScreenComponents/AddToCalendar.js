@@ -104,9 +104,9 @@ const Date = styled.Text`
 const AddButton = styled.TouchableHighlight`
   background-color: grey;
   border-radius: 10px;
-  width: 300px;
   height: 30px;
-  margin-left: 18px;
+  margin-left: 20px;
+  margin-right: 20px;
 `;
 
 const ButtonText = styled.Text`

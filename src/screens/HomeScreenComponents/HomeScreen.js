@@ -1,27 +1,34 @@
+// @flow
 import React from "react";
 import styled from "styled-components";
-import { api } from "../requests/http";
+import type {NavigationScreenProp} from 'react-navigation';
+import {withAppState} from "../../app-state";
+import type {AppState} from "../../app-state";
+import {api} from "../../requests/http";
 import ResultsList from "./ResultsList";
 import MovieTrailer from "./MovieTrailer";
+import {ScreenOuter} from "../../styles/layouts";
 
 type Props = {
+  appState: AppState,
+  navigation: NavigationScreenProp<{}>,
   openSettings: any,
-  dims: any
 };
 
-export default class HomeScreen extends React.Component<Props> {
-  constructor(props) {
-    super(props);
+type State = {
+  error: boolean,
+  trailers: any | void
+};
 
-    this.state = {
-      error: false,
-      trailers: null
-    };
-  }
+class HomeScreen extends React.Component<Props, State> {
+  state = {
+    error: false,
+    trailers: null
+  };
 
-  setError = error => this.setState({ error });
+  setError = (error: boolean) => this.setState({ error });
 
-  setTrailers = id => {
+  setTrailers = (id: number | string) => {
     if (!id) {
       return this.setState({ trailers: null });
     }
@@ -39,19 +46,20 @@ export default class HomeScreen extends React.Component<Props> {
 
   render() {
     const { setError, setTrailers } = this;
-    const { dims, openSettings } = this.props;
+    const {navigation, appState: {dims}} = this.props;
+
 
     return (
-      <Wrapper>
+      <ScreenOuter fullscreen>
         <ResultsList
-          openSettings={openSettings}
+          navigation={navigation}
           setError={setError}
           setTrailers={setTrailers}
           error={this.state.error}
           dims={dims}
         />
 
-        <ModalConatiner
+        <ModalContainer
           animationType="slide"
           transparent={false}
           visible={Boolean(this.state.trailers)}
@@ -66,22 +74,15 @@ export default class HomeScreen extends React.Component<Props> {
               unsetTrailers={this.unsetTrailers}
             />
           </FlexView>
-        </ModalConatiner>
-      </Wrapper>
+        </ModalContainer>
+      </ScreenOuter>
     );
   }
 }
 
-const Wrapper = styled.View`
-  width: 100%;
-  margin-top: 20;
-  position: relative;
-  justify-content: center;
-  align-items: center;
-  background-color: white;
-`;
+export default withAppState({})(HomeScreen);
 
-const ModalConatiner = styled.Modal`
+const ModalContainer = styled.Modal`
   width: 100%;
   height: 100%;
   margin: 0;

@@ -1,20 +1,24 @@
+// @flow
 import React from "react";
 import styled from "styled-components";
-import { api } from "../requests/http";
+import type { AppState } from "../../app-state";
+import { api } from "../../requests/http";
 import ResultsHeader from "./ResultsHeader";
 import MovieItem from "./MovieItem";
+import { COLORS } from "../../styles/theme";
 
 type Props = {
-  setError: any,
-  setTrailers: any,
-  dims: any
+  setError: Function,
+  setTrailers: Function,
+  navigation: Object,
+  dims: Object,
 };
 
 type State = {
-  page: any,
+  page: null | number,
   isLoading: boolean,
-  upcomingResults: Array,
-  TMDB_configuration: any
+  upcomingResults: Array<{}>,
+  TMDB_configuration: Object
 };
 
 export default class ResultsList extends React.Component<Props, State> {
@@ -31,13 +35,11 @@ export default class ResultsList extends React.Component<Props, State> {
 
   componentDidMount() {
     Promise.all([this.getConfig(), this.getUpcomingMovies()]).then(
-      ([TMDB_configuration, upcomingResults]) => {
-        console.log(upcomingResults);
-        return this.setState({
+      ([TMDB_configuration, upcomingResults]) =>
+        this.setState({
           TMDB_configuration,
           upcomingResults
-        });
-      }
+        })
     );
   }
 
@@ -77,13 +79,13 @@ export default class ResultsList extends React.Component<Props, State> {
         });
       })
       .catch(() => {
-        this.setState({ isLoading: false, upcomingResults: null });
+        this.setState({ isLoading: false, upcomingResults: [] });
         this.props.setError(true);
       });
   };
 
   render() {
-    const { setTrailers, openSettings } = this.props;
+    const { setTrailers, navigation, dims} = this.props;
     const { TMDB_configuration } = this.state;
 
     return (
@@ -94,16 +96,14 @@ export default class ResultsList extends React.Component<Props, State> {
         onEndReachedThreshold={3}
         data={this.state.results || this.state.upcomingResults}
         keyExtractor={(item, index) => `${index}`}
-        ListHeaderComponent={
-          <ResultsHeader {...this.state} openSettings={openSettings} />
-        }
+        ListHeaderComponent={<ResultsHeader navigation={navigation} />}
         renderItem={({ item }) => (
           <MovieItem
             {...item}
             config={TMDB_configuration}
             getVideoUrl={setTrailers}
-            color={item.index % 2 === 0 ? "red" : "gold"}
-            dims={this.props.dims}
+            color={item.index % 2 === 0 ? COLORS.primary : COLORS.secondary}
+            dims={dims}
           />
         )}
       />
@@ -114,4 +114,5 @@ export default class ResultsList extends React.Component<Props, State> {
 const ScrollableList = styled.FlatList`
   width: 100%;
   padding: 0 20px;
+  background-color: ${COLORS.background};
 `;

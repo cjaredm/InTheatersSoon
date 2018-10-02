@@ -46,8 +46,8 @@ const Poster = styled.Image`
 `;
 
 const TextContainer = styled.View`
-  max-width: ${({ dimWidth, posterWidth }) => dimWidth - posterWidth - 200};
-  justify-content: flex-end;
+  flex: 1;
+  justify-content: center;
 `;
 
 const Title = styled.Text`

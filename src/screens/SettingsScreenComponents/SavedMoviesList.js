@@ -1,6 +1,7 @@
 import React from "react";
 import { SavedMovie } from "./SavedMovie";
 import styled from "styled-components";
+import { COLORS } from "../../styles/theme";
 
 const savedMovies = [1, 2, 3, 4, 5].map(id => ({
   id,
@@ -25,7 +26,7 @@ export function SavedMovieList(props: Props) {
         return (
           <SavedMovie
             {...item}
-            color={item.id % 2 === 0 ? "red" : "gold"}
+            color={item.id % 2 === 0 ? COLORS.primary : COLORS.secondary}
             dims={props.dims}
           />
         );

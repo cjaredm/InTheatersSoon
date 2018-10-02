@@ -34,7 +34,7 @@ const Button = styled.TouchableHighlight`
   position: absolute;
   top: 20px;
   left: 20px;
-  zindex: 999999;
+  z-index: 999;
   display: flex;
 `;
 
