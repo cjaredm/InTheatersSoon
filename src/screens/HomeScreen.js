@@ -1,18 +1,17 @@
 // @flow
 import React from "react";
 import styled from "styled-components";
-import type {NavigationScreenProp} from 'react-navigation';
-import {withAppState} from "../../app-state";
-import type {AppState} from "../../app-state";
-import {api} from "../../requests/http";
-import ResultsList from "./ResultsList";
-import MovieTrailer from "./MovieTrailer";
-import {ScreenOuter} from "../../styles/layouts";
+import type { NavigationScreenProp } from "react-navigation";
+import { withAppState } from "../app-state";
+import type { AppState } from "../app-state";
+import { api } from "../requests/http";
+import ResultsList from "../components/Results/ResultsList";
+import MovieTrailer from "../components/Results/MovieTrailer";
+import { ScreenOuter } from "../styles/layouts";
 
 type Props = {
   appState: AppState,
-  navigation: NavigationScreenProp<{}>,
-  openSettings: any,
+  navigation: NavigationScreenProp<{}>
 };
 
 type State = {
@@ -46,8 +45,10 @@ class HomeScreen extends React.Component<Props, State> {
 
   render() {
     const { setError, setTrailers } = this;
-    const {navigation, appState: {dims}} = this.props;
-
+    const {
+      navigation,
+      appState: { dims, user }
+    } = this.props;
 
     return (
       <ScreenOuter fullscreen>
@@ -56,6 +57,7 @@ class HomeScreen extends React.Component<Props, State> {
           setError={setError}
           setTrailers={setTrailers}
           error={this.state.error}
+          isLoggedIn={Boolean(user)}
           dims={dims}
         />
 

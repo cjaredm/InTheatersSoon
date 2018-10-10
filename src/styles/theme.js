@@ -39,5 +39,5 @@ export const FONT_SIZE_TYPES = {
   title: FONT_SIZES.large,
   body: FONT_SIZES.medium,
   details: FONT_SIZES.small,
-  minor: FONT_SIZES.xsmall
+  button: FONT_SIZES.xsmall
 };

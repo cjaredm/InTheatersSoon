@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableHighlight } from "react-native";
 import styled from "styled-components";
-import AddToCalendar from "./AddToCalendar";
+import AddToCalendar from "../AddToCalendar";
 
 type Props = {
   title: string,

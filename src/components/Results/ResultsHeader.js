@@ -1,18 +1,21 @@
 import React from "react";
 import styled from "styled-components";
-import { Text } from "../../components/Text";
+import { Text } from "../Text";
 import { routes } from "../../navigation";
 
-type Props = {navigation: Object};
+type Props = { navigation: Object, isLoggedIn: boolean };
 
 export default function ResultsHeader(props: Props) {
-  const {navigation} = props;
+  const { navigation, isLoggedIn } = props;
+  const routePath = isLoggedIn ? routes.savedMovies : routes.login;
 
   return (
     <Wrapper>
       <Title>Reel Time Movies</Title>
-      <Button onPress={() => navigation.navigate(routes.login)}>
-        <Text sizeType="minor">Login / Sign Up / Account</Text>
+      <Button onPress={() => navigation.navigate(routePath)}>
+        <Text sizeType="details">
+          {isLoggedIn ? "Account" : "Login / Sign Up"}
+        </Text>
       </Button>
     </Wrapper>
   );
@@ -25,7 +28,7 @@ const Wrapper = styled.View`
 
 const Title = styled(Text).attrs({
   sizeType: "heading",
-  textAlign: "center",
+  textAlign: "center"
 })`
   margin-top: 25px;
   margin-bottom: 10px;

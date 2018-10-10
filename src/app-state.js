@@ -27,8 +27,7 @@ class AppStateProvider extends React.Component<
   constructor(...args: Array<any>) {
     super(...args);
     const dims = Dimensions.get("window");
-    console.log(dims);
-    /** Exposed via context */
+
     this.state = {
       user: null,
       dims: dims || {}

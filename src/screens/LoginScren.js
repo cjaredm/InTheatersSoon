@@ -1,17 +1,22 @@
 import React from "react";
-import { View, Button, Keyboard } from "react-native";
-import firebase, { auth } from "../../firebase";
-import { SavedMovieList } from "./SavedMoviesList";
+import { View, Keyboard } from "react-native";
 import styled from "styled-components";
+import firebase, { auth } from "../firebase";
+import { withAppState } from "../app-state";
+import { ScreenOuter } from "../styles/layouts";
+import { Text } from "../components/Text";
+import { Input } from "../components/Input";
+import { Button } from "../components/Button";
 
 type Props = {
   setUser: any,
   // user: any,
-  // openHome: any,
-  dims: any
+  appState: {
+    dims: Object
+  }
 };
 
-export default class SettingsScreen extends React.Component<Props> {
+class LoginScreen extends React.Component<Props> {
   state = {
     email: "email1@email.com",
     password: "12345678",
@@ -76,7 +81,7 @@ export default class SettingsScreen extends React.Component<Props> {
     Keyboard.dismiss();
   };
 
-  modalWidth = this.props.dims.width - 100;
+  modalWidth = this.props.appState.dims.width - 100;
 
   render() {
     // const { user, openHome } = this.props;
@@ -86,8 +91,6 @@ export default class SettingsScreen extends React.Component<Props> {
 
     return (
       <Wrapper>
-        <SavedMovieList dims={this.props.dims} />
-
         <Header>
           We'd love to send you notifications when your saved movies are in
           theaters soon.
@@ -107,21 +110,18 @@ export default class SettingsScreen extends React.Component<Props> {
           placeholder="Password..."
           value={this.state.password}
         />
-        <Button
-          accessibilityLabel="Create Account"
-          onPress={this.onLoginPress}
-          title="Login"
-          color="red"
-        />
+        <Button accessibilityLabel="Create Account" onPress={this.onLoginPress}>
+          Login
+        </Button>
         <Button
           accessibilityLabel="Create Account"
           onPress={this.onCreateAccountPress}
-          title="Create Account"
-          color="blue"
-        />
+        >
+          Create Account
+        </Button>
 
         <Modal
-          dims={this.props.dims}
+          dims={this.props.appState.dims}
           modalWidth={this.modalWidth}
           visible={this.state.showModal}
           animationType="slide"
@@ -139,36 +139,27 @@ export default class SettingsScreen extends React.Component<Props> {
   }
 }
 
-const Wrapper = styled.View`
+export default withAppState({})(LoginScreen);
+
+const Wrapper = styled(ScreenOuter).attrs({ fullscreen: true })`
   width: 100%;
-  margin-top: 100px;
+  padding-top: 30px;
   position: relative;
   justify-content: center;
   align-items: center;
-  background-color: white;
 `;
 
-const Header = styled.Text`
-  font-size: 20;
+const Header = styled(Text)`
+  font-size: 20px;
   text-align: center;
   width: 300px;
 `;
 
-const Description = styled.Text`
+const Description = styled(Text)`
   font-size: 16px;
   text-align: center;
   width: 320px;
   margin-bottom: 20px;
-`;
-
-const Input = styled.TextInput`
-  width: 85%;
-  height: 40px;
-  padding: 0 15px;
-  margin: 10px 0;
-  border-radius: 8px;
-  border-width: 1px;
-  border-color: black;
 `;
 
 const Modal = styled.Modal`

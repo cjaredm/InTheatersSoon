@@ -1,7 +1,6 @@
 // @flow
 import React from "react";
 import styled from "styled-components";
-import type { AppState } from "../../app-state";
 import { api } from "../../requests/http";
 import ResultsHeader from "./ResultsHeader";
 import MovieItem from "./MovieItem";
@@ -11,7 +10,9 @@ type Props = {
   setError: Function,
   setTrailers: Function,
   navigation: Object,
+  isLoggedIn: boolean,
   dims: Object,
+  error?: boolean
 };
 
 type State = {
@@ -22,8 +23,8 @@ type State = {
 };
 
 export default class ResultsList extends React.Component<Props, State> {
-  constructor() {
-    super();
+  constructor(props: Props) {
+    super(props);
 
     this.state = {
       page: null,
@@ -85,7 +86,7 @@ export default class ResultsList extends React.Component<Props, State> {
   };
 
   render() {
-    const { setTrailers, navigation, dims} = this.props;
+    const { setTrailers, navigation, dims, isLoggedIn } = this.props;
     const { TMDB_configuration } = this.state;
 
     return (
@@ -96,7 +97,9 @@ export default class ResultsList extends React.Component<Props, State> {
         onEndReachedThreshold={3}
         data={this.state.results || this.state.upcomingResults}
         keyExtractor={(item, index) => `${index}`}
-        ListHeaderComponent={<ResultsHeader navigation={navigation} />}
+        ListHeaderComponent={
+          <ResultsHeader navigation={navigation} isLoggedIn={isLoggedIn} />
+        }
         renderItem={({ item }) => (
           <MovieItem
             {...item}

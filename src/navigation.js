@@ -1,11 +1,13 @@
 // @flow
 import { Animated, Easing } from "react-native";
 import { createStackNavigator, createSwitchNavigator } from "react-navigation";
-import HomeScreen from "./screens/HomeScreenComponents/HomeScreen";
+import HomeScreen from "./screens/HomeScreen";
+import LoginScreen from "./screens/LoginScren";
+import SettingsScreen from "./screens/SettingsScreen";
 
 export const routes = {
   mainStack: "mainStack",
-  mainResults: "mainResults",
+  home: "home",
   accountStack: "accountStack",
   login: "login",
   accountSettings: "accountSettings",
@@ -31,17 +33,17 @@ export const RootNavigator = createSwitchNavigator(
     // Stack
     [routes.mainStack]: createStackNavigator(
       {
-        [routes.mainResults]: HomeScreen
+        [routes.home]: HomeScreen
       },
-      { initialRouteName: routes.mainResults, ...navigationOptions }
+      { initialRouteName: routes.home, ...navigationOptions }
     ),
 
     //
     [routes.accountStack]: createStackNavigator(
       {
-        [routes.login]: HomeScreen,
-        [routes.accountSettings]: HomeScreen,
-        [routes.savedMovies]: HomeScreen
+        [routes.login]: LoginScreen,
+        [routes.savedMovies]: SettingsScreen,
+        [routes.accountSettings]: SettingsScreen
       },
       { initialRouteName: routes.login, ...navigationOptions }
     )
