@@ -7,10 +7,11 @@ import { ScreenOuter } from "../styles/layouts";
 import { Text } from "../components/Text";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
+import ResultsHeader from "../components/Results/ResultsHeader";
 
 type Props = {
   setUser: any,
-  // user: any,
+  navigation: Object,
   appState: {
     dims: Object
   }
@@ -27,7 +28,6 @@ class LoginScreen extends React.Component<Props> {
 
   setEmail = email => this.setState({ email });
   setPassword = password => this.setState({ password });
-  // showModal = () => this.setState({ showModal: true });
   closeModal = () => this.setState({ showModal: false, error: "" });
 
   onLoginPress = () => {
@@ -84,41 +84,48 @@ class LoginScreen extends React.Component<Props> {
   modalWidth = this.props.appState.dims.width - 100;
 
   render() {
-    // const { user, openHome } = this.props;
     const modalText = this.state.error
       ? this.state.error
       : "Ta'Done!! Told you it would be easy. Now go save some movies.";
 
     return (
       <Wrapper>
-        <Header>
-          We'd love to send you notifications when your saved movies are in
-          theaters soon.
-        </Header>
-        <Description>
-          Little thing though, you gotta setup an account. Super easy, barely an
-          inconvenience.
-        </Description>
+        <ResultsHeader isLoggedIn={false} navigation={this.props.navigation} />
+        <View>
+          <Header>
+            We'd love to send you notifications when your saved movies are in
+            theaters soon.
+          </Header>
+          <Description>
+            Little thing though, you gotta setup an account. Super easy, barely
+            an inconvenience.
+          </Description>
+        </View>
 
-        <Input
-          onTextChange={value => this.setEmail(value)}
-          placeholder="Email..."
-          value={this.state.email}
-        />
-        <Input
-          onTextChange={value => this.setPassword(value)}
-          placeholder="Password..."
-          value={this.state.password}
-        />
-        <Button accessibilityLabel="Create Account" onPress={this.onLoginPress}>
-          Login
-        </Button>
-        <Button
-          accessibilityLabel="Create Account"
-          onPress={this.onCreateAccountPress}
-        >
-          Create Account
-        </Button>
+        <View>
+          <Input
+            onTextChange={value => this.setEmail(value)}
+            placeholder="Email..."
+            value={this.state.email}
+          />
+          <Input
+            onTextChange={value => this.setPassword(value)}
+            placeholder="Password..."
+            value={this.state.password}
+          />
+          <Button
+            accessibilityLabel="Create Account"
+            onPress={this.onLoginPress}
+          >
+            Login
+          </Button>
+          <Button
+            accessibilityLabel="Create Account"
+            onPress={this.onCreateAccountPress}
+          >
+            Create Account
+          </Button>
+        </View>
 
         <Modal
           dims={this.props.appState.dims}
@@ -145,8 +152,9 @@ const Wrapper = styled(ScreenOuter).attrs({ fullscreen: true })`
   width: 100%;
   padding-top: 30px;
   position: relative;
-  justify-content: center;
   align-items: center;
+  justify-content: space-between;
+  flex: 1;
 `;
 
 const Header = styled(Text)`

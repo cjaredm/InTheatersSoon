@@ -2,7 +2,7 @@
 import { Animated, Easing } from "react-native";
 import { createStackNavigator, createSwitchNavigator } from "react-navigation";
 import HomeScreen from "./screens/HomeScreen";
-import LoginScreen from "./screens/LoginScren";
+import LoginScreen from "./screens/LoginScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 
 export const routes = {

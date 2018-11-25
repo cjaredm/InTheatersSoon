@@ -3,23 +3,41 @@ import styled from "styled-components";
 import { Text } from "../Text";
 import { routes } from "../../navigation";
 
-type Props = { navigation: Object, isLoggedIn: boolean };
+type Props = {
+  navigation: Object,
+  isLoggedIn: boolean,
+  isHomeScreen: ?boolean
+};
 
 export default function ResultsHeader(props: Props) {
-  const { navigation, isLoggedIn } = props;
-  const routePath = isLoggedIn ? routes.savedMovies : routes.login;
+  const { navigation, isLoggedIn, isHomeScreen } = props;
+
+  const pageDetails = () => {
+    switch (true) {
+      case !isHomeScreen:
+        return { path: routes.home, text: "Home" };
+      case isLoggedIn && isHomeScreen:
+        return { path: routes.savedMovies, text: "Settings" };
+      case !isLoggedIn && isHomeScreen:
+        return { path: routes.login, text: "Login / Sign Up" };
+      default:
+        return { path: routes.login, text: "Login / Sign Up" };
+    }
+  };
 
   return (
     <Wrapper>
       <Title>Reel Time Movies</Title>
-      <Button onPress={() => navigation.navigate(routePath)}>
-        <Text sizeType="details">
-          {isLoggedIn ? "Account" : "Login / Sign Up"}
-        </Text>
+      <Button onPress={() => navigation.navigate(pageDetails().path)}>
+        <Text sizeType="details">{pageDetails().text}</Text>
       </Button>
     </Wrapper>
   );
 }
+
+ResultsHeader.defaultProps = {
+  isHomeScreen: false
+};
 
 const Wrapper = styled.View`
   position: relative;

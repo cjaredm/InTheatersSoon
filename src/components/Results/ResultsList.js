@@ -98,7 +98,11 @@ export default class ResultsList extends React.Component<Props, State> {
         data={this.state.results || this.state.upcomingResults}
         keyExtractor={(item, index) => `${index}`}
         ListHeaderComponent={
-          <ResultsHeader navigation={navigation} isLoggedIn={isLoggedIn} />
+          <ResultsHeader
+            navigation={navigation}
+            isLoggedIn={isLoggedIn}
+            isHomeScreen={true}
+          />
         }
         renderItem={({ item }) => (
           <MovieItem
