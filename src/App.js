@@ -1,9 +1,9 @@
 import React from "react";
-import { Platform, StatusBar, Dimensions } from "react-native";
-import styled from "styled-components";
-import { COLORS } from "./styles/theme";
-import HomeScreen from "./screens/HomeScreenComponents/HomeScreen";
-import SettingsScreen from "./screens/SettingsScreenComponents/SettingsScreen";
+import { Dimensions } from "react-native";
+import { RootNavigator } from "./navigation";
+import {AppStateProvider} from './app-state';
+// import styled from "styled-components";
+// import { COLORS } from "./styles/theme";
 
 export const SCREENS = {
   RESULTS_LIST: "RESULTS_LIST",
@@ -30,7 +30,21 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <Wrapper>
+      <AppStateProvider>
+        <RootNavigator />
+      </AppStateProvider>
+    );
+  }
+}
+
+/*
+const Wrapper = styled.View`
+  flex: 1;
+  background-color: ${COLORS.background};
+`;
+
+
+* <Wrapper>
         {Platform.OS === "ios" && <StatusBar barStyle="default" />}
 
         {this.state.activeScreen === SCREENS.RESULTS_LIST && (
@@ -49,11 +63,4 @@ export default class App extends React.Component {
           />
         )}
       </Wrapper>
-    );
-  }
-}
-
-const Wrapper = styled.View`
-  flex: 1;
-  background-color: ${COLORS.background};
-`;
+      */

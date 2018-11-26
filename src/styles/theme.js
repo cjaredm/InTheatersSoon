@@ -22,7 +22,7 @@ export const COLORS = {
   normal: "rgba(11, 79, 108, 1)",
   primary: "rgba(39, 111, 191, 1)",
   secondary: "rgba(146, 220, 229, 1)",
-  alert: "#e63053",
+  error: "#e63053",
   warning: "orange"
 };
 
@@ -39,5 +39,5 @@ export const FONT_SIZE_TYPES = {
   title: FONT_SIZES.large,
   body: FONT_SIZES.medium,
   details: FONT_SIZES.small,
-  minor: FONT_SIZES.xsmall
+  button: FONT_SIZES.xsmall
 };
