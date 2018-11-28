@@ -3,12 +3,11 @@ import {SafeAreaView as _SafeAreaView} from 'react-navigation';
 import styled from 'styled-components';
 import {COLORS} from '../styles/theme';
 
-export const ScreenOuter = styled.View`
+export const ScreenOuter = styled.SafeAreaView`
   position: relative;
-  display: flex;
   flex: 1;
   background-color: ${COLORS.background};
-  padding: ${({fullScreen}) => (fullScreen ? '0' : '10px')};
+  padding: ${({fullScreen}) => (fullScreen ? '0' : '0 20px')};
 `;
 
 export const SafeAreaView = styled(_SafeAreaView)`

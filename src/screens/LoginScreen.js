@@ -1,20 +1,19 @@
 import React from "react";
 import { View, Keyboard } from "react-native";
+import type {NavigationScreenProp} from 'react-navigation';
 import styled from "styled-components";
+import { AppContainer, subscribeTo } from "../appState";
+import type { AppState } from "../appState";
 import firebase, { auth } from "../firebase";
-import { withAppState } from "../app-state";
-import { ScreenOuter } from "../styles/layouts";
+import { ScreenOuter, Spacer } from "../styles/layouts";
 import { Text } from "../components/Text";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
 import ResultsHeader from "../components/Results/ResultsHeader";
 
 type Props = {
-  setUser: any,
-  navigation: Object,
-  appState: {
-    dims: Object
-  }
+  navigation: NavigationScreenProp<{}>,
+  subscriptions: Array<{state: AppState, updateState: Function}>,
 };
 
 class LoginScreen extends React.Component<Props> {
@@ -31,17 +30,19 @@ class LoginScreen extends React.Component<Props> {
   closeModal = () => this.setState({ showModal: false, error: "" });
 
   onLoginPress = () => {
+    const [appState] = this.props.subscriptions;
     const { email, password } = this.state;
     this.setState({ loading: true });
 
     auth
       .signInWithEmailAndPassword(email, password)
-      .then(response => {
-        console.log(response.user);
-        this.props.setUser(response.user);
+      .then(({user}) => {
+        console.log(user);
+        appState.updateState({user});
         this.setState({ loading: false, showModal: true });
       })
       .catch(error => {
+        // TODO ERROR HANDLING
         console.log(error);
         this.setState({ error, loading: false, showModal: true });
       });
@@ -64,10 +65,10 @@ class LoginScreen extends React.Component<Props> {
             email: this.state.email
           });
         this.setState({ loading: false, showModal: true });
-        this.props.setUser({
+        appState.updateState({user: {
           id: newUser.user.uid,
           email: this.state.email
-        });
+        }});
       })
       .catch(error => {
         console.log(error.message);
@@ -81,54 +82,61 @@ class LoginScreen extends React.Component<Props> {
     Keyboard.dismiss();
   };
 
-  modalWidth = this.props.appState.dims.width - 100;
+  modalWidth = this.props.subscriptions[0].state.dims.width - 100;
 
   render() {
+    const [appState] = this.props.subscriptions;
     const modalText = this.state.error
       ? this.state.error
       : "Ta'Done!! Told you it would be easy. Now go save some movies.";
 
     return (
-      <Wrapper>
-        <ResultsHeader isLoggedIn={false} navigation={this.props.navigation} />
-        <View>
-          <Header>
-            We'd love to send you notifications when your saved movies are in
-            theaters soon.
-          </Header>
-          <Description>
-            Little thing though, you gotta setup an account. Super easy, barely
-            an inconvenience.
-          </Description>
-        </View>
+      <ScreenOuter>
+        <TitleSection isLoggedIn={false} navigation={this.props.navigation} />
+        <Spacer />
 
-        <View>
-          <Input
-            onTextChange={value => this.setEmail(value)}
-            placeholder="Email..."
-            value={this.state.email}
-          />
-          <Input
-            onTextChange={value => this.setPassword(value)}
-            placeholder="Password..."
-            value={this.state.password}
-          />
-          <Button
-            accessibilityLabel="Create Account"
-            onPress={this.onLoginPress}
-          >
-            Login
-          </Button>
-          <Button
-            accessibilityLabel="Create Account"
-            onPress={this.onCreateAccountPress}
-          >
-            Create Account
-          </Button>
-        </View>
+        <Wrapper>
+            <Header>
+              We'd love to send you notifications when your saved movies are in
+              theaters soon.
+            </Header>
+            <Description>
+              Little thing though, you gotta setup an account. Super easy, barely
+              an inconvenience.
+            </Description>
+
+            <Spacer />
+
+            <Input
+              onTextChange={value => this.setEmail(value)}
+              placeholder="Email..."
+              value={this.state.email}
+            />
+            <Input
+              onTextChange={value => this.setPassword(value)}
+              placeholder="Password..."
+              value={this.state.password}
+            />
+
+          <ButtonContainer>
+            <LoginButton
+              accessibilityLabel="Login"
+              onPress={this.onLoginPress}
+            >
+              Login
+            </LoginButton>
+            <LoginButton
+              leftPad
+              accessibilityLabel="Create Account"
+              onPress={this.onCreateAccountPress}
+            >
+              Create Account
+            </LoginButton>
+          </ButtonContainer>
+        </Wrapper>
 
         <Modal
-          dims={this.props.appState.dims}
+          dims={appState.state.dims}
           modalWidth={this.modalWidth}
           visible={this.state.showModal}
           animationType="slide"
@@ -141,37 +149,47 @@ class LoginScreen extends React.Component<Props> {
             </ModalButton>
           </View>
         </Modal>
-      </Wrapper>
+      </ScreenOuter>
     );
   }
 }
 
-export default withAppState({})(LoginScreen);
+export default subscribeTo([AppContainer])(LoginScreen);
 
-const Wrapper = styled(ScreenOuter).attrs({ fullscreen: true })`
-  width: 100%;
-  padding-top: 30px;
-  position: relative;
-  align-items: center;
-  justify-content: space-between;
-  flex: 1;
+const Wrapper = styled.View`
+  padding: 0 20px;
+`;
+
+const TitleSection = styled(ResultsHeader)`
+  margin: 0 20px;
 `;
 
 const Header = styled(Text)`
   font-size: 20px;
   text-align: center;
-  width: 300px;
 `;
 
 const Description = styled(Text)`
   font-size: 16px;
   text-align: center;
-  width: 320px;
   margin-bottom: 20px;
 `;
 
+const ButtonContainer = styled.View`
+  width: 100%;
+  margin-top: auto;
+  flex: 1;
+  justify-content: space-between;
+  flex-direction: row;
+`;
+
+const LoginButton = styled(Button)`
+ flex: 1;
+ ${({leftPad}) => leftPad ? 'margin-left: 2px;' : 'margin-right: 2px;'}
+`;
+
 const Modal = styled.Modal`
-  width: this.modalWidth;
+  width: ${this.modalWidth};
   min-height: 150px;
   max-height: 220px;
   margin: 0 auto;

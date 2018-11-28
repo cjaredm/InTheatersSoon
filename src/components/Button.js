@@ -7,11 +7,11 @@ export function Button(props: Props) {
   const { children, ...otherProps } = props;
 
   return (
-    <TouchableOpacity activeOpacity={0.8} {...otherProps}>
+    <ButtonContainer activeOpacity={0.8} {...otherProps}>
       <ButtonText btnStyle={props.btnStyle}>
         {children.toUpperCase()}
       </ButtonText>
-    </TouchableOpacity>
+    </ButtonContainer>
   );
 }
 
@@ -48,7 +48,7 @@ const ButtonText = styled.Text`
   font-weight: bold;
 `;
 
-const TouchableOpacity = styled.TouchableOpacity`
+const ButtonContainer = styled.TouchableOpacity`
   opacity: ${({ disabled }) => (disabled ? 0.8 : 1)};
   border-radius: 5px;
   align-items: center;

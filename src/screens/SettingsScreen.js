@@ -1,14 +1,15 @@
 import React from "react";
 import { View } from "react-native";
-import { SavedMovieList } from "../components/SavedMovies/SavedMoviesList";
 import styled from "styled-components";
-import { withAppState } from "../app-state";
+// import type {NavigationScreenProp} from 'react-navigation';
+import { AppContainer, subscribeTo } from "../appState";
+import { SavedMovieList } from "../components/SavedMovies/SavedMoviesList";
 import { ScreenOuter } from "../styles/layouts";
+import type { AppState } from "../appState";
 
 type Props = {
-  appState: {
-    dims: Object
-  }
+  // navigation: NavigationScreenProp<{}>,
+  subscriptions: Array<{state: AppState, updateState: Function}>,
 };
 
 type State = {
@@ -24,22 +25,23 @@ class SettingsScreen extends React.Component<Props, State> {
     showModal: false
   };
 
-  modalWidth = this.props.appState.dims.width - 100;
+  modalWidth = this.props.subscriptions[0].state.dims.width - 100;
 
   render() {
+    const [appState] = this.props.subscriptions;
     return (
       <Wrapper>
-        <SavedMovieList dims={this.props.appState.dims} />
+        <SavedMovieList dims={appState.state.dims} />
 
         <Modal
-          dims={this.props.appState.dims}
+          dims={appState.state.dims}
           modalWidth={this.modalWidth}
           visible={this.state.showModal}
           animationType="slide"
           transparent
         >
           <View>
-            <ModalText>{modalText}</ModalText>
+            <ModalText>This is a modal of some kind</ModalText>
             <ModalButton onPress={this.closeModal}>
               <ModalCloseText>CLOSE</ModalCloseText>
             </ModalButton>
@@ -50,7 +52,7 @@ class SettingsScreen extends React.Component<Props, State> {
   }
 }
 
-export default withAppState({})(SettingsScreen);
+export default subscribeTo([AppContainer])(SettingsScreen);
 
 const Wrapper = styled(ScreenOuter).attrs({ fullscreen: true })`
   width: 100%;

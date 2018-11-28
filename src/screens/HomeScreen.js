@@ -2,16 +2,16 @@
 import React from "react";
 import styled from "styled-components";
 import type { NavigationScreenProp } from "react-navigation";
-import { withAppState } from "../app-state";
-import type { AppState } from "../app-state";
+import type { AppState } from "../appState";
+import { AppContainer, subscribeTo } from "../appState";
 import { api } from "../requests/http";
 import ResultsList from "../components/Results/ResultsList";
 import MovieTrailer from "../components/Results/MovieTrailer";
 import { ScreenOuter } from "../styles/layouts";
 
 type Props = {
-  appState: AppState,
-  navigation: NavigationScreenProp<{}>
+  navigation: NavigationScreenProp<{}>,
+  subscriptions: Array<{state: AppState, updateState: Function}>,
 };
 
 type State = {
@@ -44,11 +44,10 @@ class HomeScreen extends React.Component<Props, State> {
   unsetTrailers = () => this.setState({ trailers: null });
 
   render() {
-    const { setError, setTrailers } = this;
-    const {
+    const { setError, setTrailers, props: {
       navigation,
-      appState: { dims, user }
-    } = this.props;
+      subscriptions: [{ state: {dims, user }}],
+    }} = this;
 
     return (
       <ScreenOuter fullscreen>
@@ -82,7 +81,7 @@ class HomeScreen extends React.Component<Props, State> {
   }
 }
 
-export default withAppState({})(HomeScreen);
+export default subscribeTo([AppContainer])(HomeScreen);
 
 const ModalContainer = styled.Modal`
   width: 100%;

@@ -48,5 +48,5 @@ export const RootNavigator = createSwitchNavigator(
       { initialRouteName: routes.login, ...navigationOptions }
     )
   },
-  { initialRouteName: routes.mainStack }
+  { initialRouteName: routes.accountStack }
 );
