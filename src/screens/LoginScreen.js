@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Keyboard } from "react-native";
+import { Keyboard } from "react-native";
 import type { NavigationScreenProp } from "react-navigation";
 import styled from "styled-components";
 import { AppContainer, subscribeTo } from "../appState";
@@ -30,28 +30,26 @@ class LoginScreen extends React.Component<Props> {
   setPassword = password => this.setState({ password });
   closeModal = () => this.setState({ showModal: false, error: "" });
 
-  onLoginPress = () => {
+  onLoginPress = async () => {
     const [appState] = this.props.subscriptions;
     const { email, password } = this.state;
     this.setState({ loading: true });
 
-    auth
-      .signInWithEmailAndPassword(email, password)
-      .then(({ user }) => {
-        console.log(user);
-        appState.updateState({ user });
-        this.setState({ loading: false, showModal: true });
-      })
-      .catch(error => {
-        // TODO ERROR HANDLING
-        console.log(error);
-        this.setState({ error, loading: false, showModal: true });
-      });
-
+    try {
+      const response = await auth.signInWithEmailAndPassword(email, password);
+      console.log("Success!", response);
+      appState.updateState({ user: response.user });
+      this.setState({ loading: false, showModal: true });
+    } catch (resp) {
+      console.log("ERROR!", resp);
+      // TODO ERROR HANDLING Component (ErrorList)
+      this.setState({ error: resp.message, loading: false, showModal: true });
+    }
     Keyboard.dismiss();
   };
 
   onCreateAccountPress = () => {
+    const [appState] = this.props.subscriptions;
     const { email, password } = this.state;
     this.setState({ loading: true });
 
@@ -109,12 +107,12 @@ class LoginScreen extends React.Component<Props> {
           <Spacer />
 
           <Input
-            onTextChange={value => this.setEmail(value)}
+            onTextChange={this.setEmail}
             placeholder="Email..."
             value={this.state.email}
           />
           <Input
-            onTextChange={value => this.setPassword(value)}
+            onTextChange={this.setPassword}
             placeholder="Password..."
             value={this.state.password}
           />

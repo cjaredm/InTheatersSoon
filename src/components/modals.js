@@ -7,6 +7,7 @@ import { Text } from "./Text";
 type ConfirmModalProps = {
   visible: boolean,
   dims: { width: number },
+  title: string,
   text: string,
   closeModal: Function,
   buttonText: string
@@ -17,7 +18,7 @@ export const ConfirmModal = (props: ConfirmModalProps) => (
   <Modal visible={props.visible} animationType="slide" transparent>
     <ModalContainer dims={props.dims}>
       <Text sizeType="title" colorType="background" textAlign="center">
-        Hooray!
+        {props.title}
       </Text>
       <ModalText>{props.text}</ModalText>
       <ModalButton onPress={props.closeModal}>
@@ -26,6 +27,11 @@ export const ConfirmModal = (props: ConfirmModalProps) => (
     </ModalContainer>
   </Modal>
 );
+
+ConfirmModal.defaultProps = {
+  title: "Ooh No!",
+  buttonText: "Close"
+};
 
 const ModalContainer = styled.View`
   min-height: 150px;
