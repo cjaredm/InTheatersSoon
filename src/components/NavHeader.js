@@ -1,4 +1,5 @@
 // @flow
+// eslint-disable-next-line
 import * as React from "react";
 import { TouchableOpacity } from "react-native";
 import styled from "styled-components";
@@ -22,12 +23,9 @@ export function NavHeader(props: Props) {
       {title && <Text colorType="white">{title}</Text>}
 
       {right.content && (
-        <TouchableOpacity
-          onPress={() => right.onPress && right.onPress(nav)}
-          style={{ marginLeft: title ? 0 : "auto" }}
-        >
+        <RightButton onPress={() => right.onPress && right.onPress(nav)}>
           {right.content}
-        </TouchableOpacity>
+        </RightButton>
       )}
     </Header>
   );
@@ -64,4 +62,8 @@ const Header = styled.View`
   justify-content: space-between;
   padding: 40px 20px 0 20px;
   background-color: ${COLORS.background};
+`;
+
+const RightButton = styled.TouchableOpacity`
+  margin-left: ${({ title }) => (title ? 0 : "auto")};
 `;
