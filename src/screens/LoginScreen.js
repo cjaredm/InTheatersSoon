@@ -9,15 +9,28 @@ import { ScreenOuter, Spacer } from "../styles/layouts";
 import { Text } from "../components/Text";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
-import ResultsHeader from "../components/Results/ResultsHeader";
 import { ConfirmModal } from "../components/modals";
+import { routes } from "../navigation";
+import { NavHeader } from "../components/NavHeader";
 
 type Props = {
   navigation: NavigationScreenProp<{}>,
   subscriptions: Array<{ state: AppState, updateState: Function }>
 };
 
-class LoginScreen extends React.Component<Props> {
+class LoginScreen extends React.Component<Props, {}> {
+  static navigationOptions = ({ navigation }) => ({
+    header: () => (
+      <NavHeader
+        nav={navigation}
+        left={{
+          content: <Text>Back</Text>,
+          onPress: () => navigation.navigate(routes.home)
+        }}
+        right={{}}
+      />
+    )
+  });
   state = {
     email: "email1@email.com",
     password: "12345678",
@@ -28,7 +41,10 @@ class LoginScreen extends React.Component<Props> {
 
   setEmail = email => this.setState({ email });
   setPassword = password => this.setState({ password });
-  closeModal = () => this.setState({ showModal: false, error: "" });
+  closeModal = () => {
+    this.setState({ showModal: false, error: "" });
+    this.props.navigation.navigate(routes.savedMovies);
+  };
 
   onLoginPress = async () => {
     const [appState] = this.props.subscriptions;
@@ -36,9 +52,15 @@ class LoginScreen extends React.Component<Props> {
     this.setState({ loading: true });
 
     try {
-      const response = await auth.signInWithEmailAndPassword(email, password);
-      console.log("Success!", response);
-      appState.updateState({ user: response.user });
+      const { user } = await auth.signInWithEmailAndPassword(email, password);
+      appState.updateState({
+        user: {
+          id: user.uid,
+          email: user.email,
+          refreshToken: user.refreshToken
+        }
+      });
+      console.log("Success!");
       this.setState({ loading: false, showModal: true });
     } catch (resp) {
       console.log("ERROR!", resp);
@@ -91,7 +113,8 @@ class LoginScreen extends React.Component<Props> {
 
     return (
       <ScreenOuter>
-        <TitleSection isLoggedIn={false} navigation={this.props.navigation} />
+        <Spacer />
+        <Title>Reel TIme Movies</Title>
         <Spacer />
 
         <Wrapper>
@@ -135,6 +158,7 @@ class LoginScreen extends React.Component<Props> {
           visible={this.state.showModal}
           dims={appState.state.dims}
           animationType="slide"
+          title="Hooray!"
           text={modalText}
           buttonText="CLOSE"
           closeModal={this.closeModal}
@@ -151,8 +175,11 @@ const Wrapper = styled.View`
   padding: 0 20px;
 `;
 
-const TitleSection = styled(ResultsHeader)`
-  margin: 0 20px;
+const Title = styled(Text).attrs({
+  sizeType: "heading",
+  textAlign: "center"
+})`
+  margin-bottom: 10px;
 `;
 
 const Header = styled(Text)`

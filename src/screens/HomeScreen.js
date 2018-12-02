@@ -8,10 +8,13 @@ import { api } from "../requests/http";
 import ResultsList from "../components/Results/ResultsList";
 import MovieTrailer from "../components/Results/MovieTrailer";
 import { ScreenOuter } from "../styles/layouts";
+import { NavHeader } from "../components/NavHeader";
+import { Text } from "../components/Text";
+import { routes } from "../navigation";
 
 type Props = {
   navigation: NavigationScreenProp<{}>,
-  subscriptions: Array<{state: AppState, updateState: Function}>,
+  subscriptions: Array<{ state: AppState, updateState: Function }>
 };
 
 type State = {
@@ -20,6 +23,18 @@ type State = {
 };
 
 class HomeScreen extends React.Component<Props, State> {
+  static navigationOptions = ({ navigation }) => ({
+    header: () => (
+      <NavHeader
+        nav={navigation}
+        left={{}}
+        right={{
+          content: <Text>Login</Text>,
+          onPress: () => navigation.navigate(routes.login)
+        }}
+      />
+    )
+  });
   state = {
     error: false,
     trailers: null
@@ -44,13 +59,22 @@ class HomeScreen extends React.Component<Props, State> {
   unsetTrailers = () => this.setState({ trailers: null });
 
   render() {
-    const { setError, setTrailers, props: {
-      navigation,
-      subscriptions: [{ state: {dims, user }}],
-    }} = this;
+    const {
+      setError,
+      setTrailers,
+      props: {
+        navigation,
+        subscriptions: [
+          {
+            state: { dims, user }
+          }
+        ]
+      }
+    } = this;
 
     return (
       <ScreenOuter fullscreen>
+        <Title>Reel Time Movies</Title>
         <ResultsList
           navigation={navigation}
           setError={setError}
@@ -82,6 +106,13 @@ class HomeScreen extends React.Component<Props, State> {
 }
 
 export default subscribeTo([AppContainer])(HomeScreen);
+
+const Title = styled(Text).attrs({
+  sizeType: "heading",
+  textAlign: "center"
+})`
+  margin-bottom: 10px;
+`;
 
 const ModalContainer = styled.Modal`
   width: 100%;

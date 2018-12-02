@@ -6,10 +6,13 @@ import { AppContainer, subscribeTo } from "../appState";
 import { SavedMovieList } from "../components/SavedMovies/SavedMoviesList";
 import { ScreenOuter } from "../styles/layouts";
 import type { AppState } from "../appState";
+import { NavHeader } from "../components/NavHeader";
+import { Text } from "../components/Text";
+import { routes } from "../navigation";
 
 type Props = {
   // navigation: NavigationScreenProp<{}>,
-  subscriptions: Array<{state: AppState, updateState: Function}>,
+  subscriptions: Array<{ state: AppState, updateState: Function }>
 };
 
 type State = {
@@ -19,6 +22,19 @@ type State = {
 };
 
 class SettingsScreen extends React.Component<Props, State> {
+  static navigationOptions = ({ navigation }) => ({
+    header: () => (
+      <NavHeader
+        nav={navigation}
+        left={{
+          content: <Text>Home</Text>,
+          onPress: () => navigation.navigate(routes.home)
+        }}
+        right={{}}
+      />
+    )
+  });
+
   state = {
     error: null,
     loading: false,

@@ -97,13 +97,6 @@ export default class ResultsList extends React.Component<Props, State> {
         onEndReachedThreshold={3}
         data={this.state.results || this.state.upcomingResults}
         keyExtractor={(item, index) => `${index}`}
-        ListHeaderComponent={
-          <ResultsHeader
-            navigation={navigation}
-            isLoggedIn={isLoggedIn}
-            isHomeScreen={true}
-          />
-        }
         renderItem={({ item }) => (
           <MovieItem
             {...item}

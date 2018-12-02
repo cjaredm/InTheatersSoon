@@ -1,5 +1,4 @@
 // @flow
-import { Animated, Easing } from "react-native";
 import { createStackNavigator, createSwitchNavigator } from "react-navigation";
 import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
@@ -14,7 +13,7 @@ export const routes = {
   savedMovies: "savedMovies"
 };
 
-const navigationOptions = {
+/*const stackOptions = {
   // No header
   headerMode: "none",
   // No transitions between screen
@@ -25,7 +24,7 @@ const navigationOptions = {
       easing: Easing.step0
     }
   })
-};
+};*/
 
 // The top level switch navigator
 export const RootNavigator = createSwitchNavigator(
@@ -35,7 +34,7 @@ export const RootNavigator = createSwitchNavigator(
       {
         [routes.home]: HomeScreen
       },
-      { initialRouteName: routes.home, ...navigationOptions }
+      { initialRouteName: routes.home }
     ),
 
     //
@@ -45,8 +44,8 @@ export const RootNavigator = createSwitchNavigator(
         [routes.savedMovies]: SettingsScreen,
         [routes.accountSettings]: SettingsScreen
       },
-      { initialRouteName: routes.login, ...navigationOptions }
+      { initialRouteName: routes.login }
     )
   },
-  { initialRouteName: routes.accountStack }
+  { initialRouteName: routes.mainStack }
 );

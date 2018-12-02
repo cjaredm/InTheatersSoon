@@ -1,9 +1,10 @@
 // @flow
-import React from 'react';
-import type {ComponentType} from 'react';
-import {Container, Subscribe} from 'unstated';
-import type {ContainersType} from 'unstated';
+import React from "react";
+import type { ComponentType } from "react";
+import { Container, Subscribe } from "unstated";
+import type { ContainersType } from "unstated";
 import { Dimensions } from "react-native";
+import hoistNonReactStatics from "hoist-non-react-statics";
 
 export type AppState = {
   user?: null | Object,
@@ -15,23 +16,27 @@ export type AppState = {
 
 export class AppContainer extends Container<AppState> {
   state = {
-    dims: Dimensions.get("window"),
+    dims: Dimensions.get("window")
   };
 
   updateState = (newState: {}) => this.setState(newState);
 }
 
 export type Subscription = {
-  state: {[string]: any},
-  [string]: (...args: Array<any>) => ?Promise<void>,
+  state: { [string]: any },
+  [string]: (...args: Array<any>) => ?Promise<void>
 };
 
 export type Subscriptions = Array<Subscription>;
 // $FlowFixMe eslint-disable-line react/display-name
 export const subscribeTo = (containers: ContainersType): Function => (
   Inner: ComponentType<{}>
-): ComponentType<{}> => (props: any) => (
+): ComponentType<{}> => {
+  const SubscribeToContainers = (props: any) => (
     <Subscribe to={containers}>
       {(...subscriptions) => <Inner {...props} subscriptions={subscriptions} />}
     </Subscribe>
   );
+  hoistNonReactStatics(SubscribeToContainers, Inner);
+  return SubscribeToContainers;
+};
