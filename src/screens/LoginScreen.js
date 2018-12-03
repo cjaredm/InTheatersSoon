@@ -3,7 +3,7 @@ import { Keyboard } from "react-native";
 import type { NavigationScreenProp } from "react-navigation";
 import styled from "styled-components";
 import { AppContainer, subscribeTo } from "../appState";
-import type { AppState } from "../appState";
+import type { AppStateSubscription } from "../appState";
 import firebase, { auth } from "../firebase";
 import { ScreenOuter, Spacer } from "../styles/layouts";
 import { Text } from "../components/Text";
@@ -15,7 +15,7 @@ import { NavHeader } from "../components/NavHeader";
 
 type Props = {
   navigation: NavigationScreenProp<{}>,
-  subscriptions: Array<{ state: AppState, updateState: Function }>
+  subscriptions: AppStateSubscription
 };
 
 class LoginScreen extends React.Component<Props, {}> {
@@ -32,8 +32,8 @@ class LoginScreen extends React.Component<Props, {}> {
     )
   });
   state = {
-    email: "email1@email.com",
-    password: "12345678",
+    email: "",
+    password: "",
     error: null,
     loading: false,
     showModal: false
@@ -53,48 +53,57 @@ class LoginScreen extends React.Component<Props, {}> {
 
     try {
       const { user } = await auth.signInWithEmailAndPassword(email, password);
+      const snapShot = await firebase
+        .database()
+        .ref(`/users/${user.uid}`)
+        .once("value");
+      const data = snapShot.val() && snapShot.val();
+
       appState.updateState({
         user: {
           id: user.uid,
           email: user.email,
-          refreshToken: user.refreshToken
+          refreshToken: user.refreshToken,
+          ...data,
+          movies: Object.values(data.movies)
         }
       });
-      console.log("Success!");
       this.setState({ loading: false, showModal: true });
-    } catch (resp) {
-      console.log("ERROR!", resp);
+    } catch (errors) {
       // TODO ERROR HANDLING Component (ErrorList)
-      this.setState({ error: resp.message, loading: false, showModal: true });
+      this.setState({ error: errors.message, loading: false, showModal: true });
     }
     Keyboard.dismiss();
   };
 
-  onCreateAccountPress = () => {
+  onCreateAccountPress = async () => {
     const [appState] = this.props.subscriptions;
     const { email, password } = this.state;
     this.setState({ loading: true });
 
     auth
       .createUserWithEmailAndPassword(email, password)
-      .then(newUser => {
+      .then(({ user }) => {
+        const initialUser = {
+          email: user.email,
+          id: user.uid,
+          movies: [{ id: 1000 }]
+        };
+
         firebase
           .database()
-          .ref("userProfile")
-          .child(newUser.user.uid)
-          .set({
-            email: this.state.email
+          .ref(`/users/${user.uid}`)
+          .set(initialUser)
+          .then(error => {
+            if (error) throw new Error(error);
           });
+
         this.setState({ loading: false, showModal: true });
         appState.updateState({
-          user: {
-            id: newUser.user.uid,
-            email: this.state.email
-          }
+          user: initialUser
         });
       })
       .catch(error => {
-        console.log(error.message);
         this.setState({
           error: error.message,
           loading: false,
@@ -130,12 +139,17 @@ class LoginScreen extends React.Component<Props, {}> {
           <Spacer />
 
           <Input
-            onTextChange={this.setEmail}
+            name="email"
+            keyboardType="email-address"
+            textContentType="emailAddress"
+            onChangeText={this.setEmail}
             placeholder="Email..."
             value={this.state.email}
           />
           <Input
-            onTextChange={this.setPassword}
+            name="password"
+            textContentType="password"
+            onChangeText={this.setPassword}
             placeholder="Password..."
             value={this.state.password}
           />

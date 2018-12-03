@@ -3,29 +3,40 @@ import { TouchableHighlight } from "react-native";
 import styled from "styled-components";
 import AddToCalendar from "../AddToCalendar";
 
-type Props = {
-  title: string,
-  release_date: string,
+export type MovieType = {
+  adult: boolean,
+  backdrop_path: string,
+  genre_ids: Array<number>,
+  id: number,
+  index: number,
+  original_language: string,
+  original_title: string,
+  overview: string,
+  popularity: number,
   poster_path: string,
-  id: number | string,
-  config: Object,
+  release_date: string,
+  title: string,
+  video: boolean,
+  vote_average: number,
+  vote_count: number
+};
+
+type Props = {
+  config: { images: { secure_base_url: string, poster_sizes: Array<string> } },
   getVideoUrl: Function,
   color: string,
-  dims: Object
+  dims: Object,
+  movie: MovieType
 };
 
 export default function MovieItem(props: Props) {
   const {
-    title,
-    release_date,
-    poster_path,
-    id,
+    movie: { title, release_date, poster_path, id },
     config,
     getVideoUrl,
     color,
     dims
   } = props;
-
   const poster = `${config.images.secure_base_url}${
     config.images.poster_sizes[4]
   }${poster_path}`;
@@ -47,6 +58,7 @@ export default function MovieItem(props: Props) {
       </TouchableHighlight>
       <AddToCalendar
         releaseDate={release_date}
+        movie={props.movie}
         title={title}
         color={color}
         dims={dims}

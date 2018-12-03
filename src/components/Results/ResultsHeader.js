@@ -43,7 +43,7 @@ ResultsHeader.defaultProps = {
 const Wrapper = styled.View`
   position: relative;
   padding-top: 20px;
-  ${({pad}) => pad ? 'margin: 0 20px;' : 'margin: 0;'}
+  ${({ pad }) => (pad ? "margin: 0 20px;" : "margin: 0;")};
 `;
 
 const Title = styled(Text).attrs({

@@ -1,5 +1,5 @@
 import React from "react";
-import {Provider} from 'unstated';
+import { Provider } from "unstated";
 import { RootNavigator } from "./navigation";
 // import {Orientation} from './utils/Orientation';
 // import styled from "styled-components";

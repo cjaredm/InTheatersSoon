@@ -13,18 +13,18 @@ export const routes = {
   savedMovies: "savedMovies"
 };
 
-/*const stackOptions = {
+const stackOptions = {
   // No header
-  headerMode: "none",
-  // No transitions between screen
+  headerMode: "none"
+  /* // No transitions between screen
   transitionConfig: () => ({
     transitionSpec: {
       duration: 0,
       timing: Animated.timing,
       easing: Easing.step0
     }
-  })
-};*/
+  })*/
+};
 
 // The top level switch navigator
 export const RootNavigator = createSwitchNavigator(
@@ -34,7 +34,7 @@ export const RootNavigator = createSwitchNavigator(
       {
         [routes.home]: HomeScreen
       },
-      { initialRouteName: routes.home }
+      { initialRouteName: routes.home, ...stackOptions }
     ),
 
     //

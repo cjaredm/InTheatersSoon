@@ -23,18 +23,6 @@ type State = {
 };
 
 class HomeScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => ({
-    header: () => (
-      <NavHeader
-        nav={navigation}
-        left={{}}
-        right={{
-          content: <Text>Login</Text>,
-          onPress: () => navigation.navigate(routes.login)
-        }}
-      />
-    )
-  });
   state = {
     error: false,
     trailers: null
@@ -63,7 +51,7 @@ class HomeScreen extends React.Component<Props, State> {
       setError,
       setTrailers,
       props: {
-        navigation,
+        navigation: nav,
         subscriptions: [
           {
             state: { dims, user }
@@ -72,11 +60,23 @@ class HomeScreen extends React.Component<Props, State> {
       }
     } = this;
 
+    const content = <Text>{user ? "Saved" : "Login"}</Text>;
+    const destination = user ? routes.savedMovies : routes.login;
+
     return (
-      <ScreenOuter fullscreen>
+      <ScreenOuter>
+        <NavHeader
+          isStatic={false}
+          nav={nav}
+          left={{}}
+          right={{
+            content,
+            onPress: () => nav.navigate(destination)
+          }}
+        />
         <Title>Reel Time Movies</Title>
         <ResultsList
-          navigation={navigation}
+          navigation={nav}
           setError={setError}
           setTrailers={setTrailers}
           error={this.state.error}

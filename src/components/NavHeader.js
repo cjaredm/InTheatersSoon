@@ -9,11 +9,9 @@ import { Text } from "./Text";
 import { routes } from "../navigation";
 
 export function NavHeader(props: Props) {
-  const { title, left, right, nav } = props;
-  console.log("this is on");
-
+  const { title, left, right, nav, isStatic } = props;
   return (
-    <Header>
+    <Header isStatic={isStatic}>
       {left && (
         <TouchableOpacity onPress={() => left.onPress && left.onPress(nav)}>
           {left.content}
@@ -42,7 +40,8 @@ NavHeader.defaultProps = {
   right: {
     content: <Text colorType="white">Cancel</Text>,
     onPress: nav => nav.navigate(routes.home)
-  }
+  },
+  isStatic: true
 };
 
 type HeaderButtonProps = {
@@ -54,13 +53,14 @@ type Props = {
   nav: NavigationScreenProp<{ routes: Array<string> }>,
   left: HeaderButtonProps,
   right: HeaderButtonProps,
-  title?: string
+  title?: string,
+  isStatic?: boolean
 };
 
 const Header = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  padding: 40px 20px 0 20px;
+  padding: ${({ isStatic }) => (isStatic ? "40px" : "0")} 20px 0 20px;
   background-color: ${COLORS.background};
 `;
 

@@ -2,11 +2,16 @@
 import React from "react";
 import { View, Text, Modal } from "react-native";
 import styled from "styled-components";
+import type { AppStateSubscription } from "../appState";
+import firebase from "../firebase";
+import type { MovieType } from "./Results/MovieItem";
+import { ConfirmModal } from "./modals";
+import { AppContainer, subscribeTo } from "../appState";
 
 type Props = {
+  subscriptions: AppStateSubscription,
+  movie: MovieType,
   color: string,
-  title: string,
-  releaseDate: string,
   dims: any
 };
 
@@ -15,19 +20,37 @@ type State = {
   error: any
 };
 
-export default class AddToCalendar extends React.Component<Props, State> {
+class AddToCalendar extends React.Component<Props, State> {
   state = {
     showModal: false,
     error: null
+  };
+
+  saveMovie = (movie: Object) => {
+    const [
+      {
+        state: { user }
+      }
+    ] = this.props.subscriptions;
+
+    if (!user) {
+      this.setState({ error: "Sorry, you are not logged in!" });
+    } else {
+      firebase
+        .database()
+        .ref(`/users/${user.id}/movies/${movie.id}`)
+        .set(movie)
+        .then(error => error && console.error(error));
+    }
   };
 
   modalWidth = this.props.dims.width - 100;
 
   successModalText = (
     <View>
-      <ModalText>Calendar Event Added:</ModalText>
-      <Text>Title: {this.props.title}</Text>
-      <Text>Date: {this.props.releaseDate}</Text>
+      <ModalText>Successfully Added:</ModalText>
+      <Text>Title: {this.props.movie.title}</Text>
+      <Text>Date: {this.props.movie.releaseDate}</Text>
       <Text>Alert: 9 AM</Text>
     </View>
   );
@@ -39,7 +62,7 @@ export default class AddToCalendar extends React.Component<Props, State> {
   );
 
   render() {
-    const { color, releaseDate, dims } = this.props;
+    const { color, dims, movie } = this.props;
     const {
       state: { showModal, error },
       successModalText,
@@ -49,14 +72,21 @@ export default class AddToCalendar extends React.Component<Props, State> {
 
     return (
       <TabBottom color={color}>
-        <Date>{releaseDate}</Date>
-        <AddButton
-          onPress={() => {
-            console.log("added something");
-          }}
-        >
+        <Date>{movie.releaseDate}</Date>
+        <AddButton onPress={() => this.saveMovie(movie)}>
           <ButtonText>Add To Calendar</ButtonText>
         </AddButton>
+        <ConfirmModal
+          visible={this.state.showModal}
+          dims={dims}
+          animationType="slide"
+          title="Hooray!"
+          text="This is the modal text."
+          buttonText="CLOSE"
+          closeModal={() => this.setState({ showModal: false })}
+          transparent
+        />
+
         <Modal animationType="slide" transparent visible={showModal}>
           <ModalContainer modalWidth={modalWidth} dims={dims}>
             {error ? failureModalText : successModalText}
@@ -69,6 +99,8 @@ export default class AddToCalendar extends React.Component<Props, State> {
     );
   }
 }
+
+export default subscribeTo([AppContainer])(AddToCalendar);
 
 const ModalContainer = styled.View`
   width: ${({ modalWidth }) => modalWidth};

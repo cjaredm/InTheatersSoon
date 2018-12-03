@@ -55,6 +55,7 @@ export class Input extends React.Component<Props, State> {
     return (
       <Wrapper disabled={disabled}>
         <TextInput
+          autoCapitalize="none"
           inputStateColor={inputStateColor()}
           placeholderTextColor={COLORS.normal}
           innerRef={node => {

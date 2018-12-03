@@ -5,14 +5,14 @@ import styled from "styled-components";
 import { AppContainer, subscribeTo } from "../appState";
 import { SavedMovieList } from "../components/SavedMovies/SavedMoviesList";
 import { ScreenOuter } from "../styles/layouts";
-import type { AppState } from "../appState";
+import type { AppStateSubscription } from "../appState";
 import { NavHeader } from "../components/NavHeader";
 import { Text } from "../components/Text";
 import { routes } from "../navigation";
 
 type Props = {
   // navigation: NavigationScreenProp<{}>,
-  subscriptions: Array<{ state: AppState, updateState: Function }>
+  subscriptions: AppStateSubscription
 };
 
 type State = {
@@ -47,7 +47,7 @@ class SettingsScreen extends React.Component<Props, State> {
     const [appState] = this.props.subscriptions;
     return (
       <Wrapper>
-        <SavedMovieList dims={appState.state.dims} />
+        <SavedMovieList dims={appState.state.dims} user={appState.state.user} />
 
         <Modal
           dims={appState.state.dims}

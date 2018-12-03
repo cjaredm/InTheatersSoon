@@ -2,7 +2,6 @@
 import React from "react";
 import styled from "styled-components";
 import { api } from "../../requests/http";
-import ResultsHeader from "./ResultsHeader";
 import MovieItem from "./MovieItem";
 import { COLORS } from "../../styles/theme";
 
@@ -91,15 +90,15 @@ export default class ResultsList extends React.Component<Props, State> {
 
     return (
       <ScrollableList
-        underlayColor="red"
-        initialNumToRender={3}
-        onEndReached={this.addNextPageOfUpcomingResults}
-        onEndReachedThreshold={3}
         data={this.state.results || this.state.upcomingResults}
+        onEndReached={this.addNextPageOfUpcomingResults}
         keyExtractor={(item, index) => `${index}`}
+        onEndReachedThreshold={3}
+        initialNumToRender={3}
+        underlayColor="red"
         renderItem={({ item }) => (
           <MovieItem
-            {...item}
+            movie={item}
             config={TMDB_configuration}
             getVideoUrl={setTrailers}
             color={item.index % 2 === 0 ? COLORS.primary : COLORS.secondary}

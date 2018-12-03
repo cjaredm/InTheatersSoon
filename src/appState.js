@@ -6,8 +6,14 @@ import type { ContainersType } from "unstated";
 import { Dimensions } from "react-native";
 import hoistNonReactStatics from "hoist-non-react-statics";
 
+export type UserType = {
+  id: number,
+  email: string,
+  movies?: Array<{}> | Object
+};
+
 export type AppState = {
-  user?: null | Object,
+  user: ?UserType,
   dims: {
     width: string,
     height: string
@@ -16,11 +22,17 @@ export type AppState = {
 
 export class AppContainer extends Container<AppState> {
   state = {
+    user: null,
     dims: Dimensions.get("window")
   };
 
   updateState = (newState: {}) => this.setState(newState);
 }
+
+export type AppStateSubscription = Array<{
+  state: AppState,
+  updateState: Function
+}>;
 
 export type Subscription = {
   state: { [string]: any },
