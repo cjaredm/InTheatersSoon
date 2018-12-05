@@ -1,17 +1,18 @@
 import React from "react";
 import { View } from "react-native";
 import styled from "styled-components";
-// import type {NavigationScreenProp} from 'react-navigation';
+import type { NavigationScreenProp } from "react-navigation";
 import { AppContainer, subscribeTo } from "../appState";
 import { SavedMovieList } from "../components/SavedMovies/SavedMoviesList";
-import { ScreenOuter } from "../styles/layouts";
+import { ScreenOuter, Spacer } from "../styles/layouts";
 import type { AppStateSubscription } from "../appState";
 import { NavHeader } from "../components/NavHeader";
 import { Text } from "../components/Text";
 import { routes } from "../navigation";
+import firebase from "../firebase";
 
 type Props = {
-  // navigation: NavigationScreenProp<{}>,
+  navigation: NavigationScreenProp<{}>,
   subscriptions: AppStateSubscription
 };
 
@@ -22,32 +23,70 @@ type State = {
 };
 
 class SettingsScreen extends React.Component<Props, State> {
-  static navigationOptions = ({ navigation }) => ({
-    header: () => (
-      <NavHeader
-        nav={navigation}
-        left={{
-          content: <Text>Home</Text>,
-          onPress: () => navigation.navigate(routes.home)
-        }}
-        right={{}}
-      />
-    )
-  });
-
+  // TODO: Fix the header on this so it doesn't show.
   state = {
     error: null,
     loading: false,
     showModal: false
   };
 
+  async componentDidMount(): void {
+    const [
+      {
+        state: { user },
+        updateState
+      }
+    ] = this.props.subscriptions;
+    await firebase
+      .database()
+      .ref(`/users/${user.id}/movies`)
+      .on("value", snapShot => {
+        const movies = Object.values(snapShot.val());
+        snapShot.val() && updateState({ user: { ...user, movies } });
+      });
+  }
+
+  // TODO: Fix this nasty dims thing, everywhere
   modalWidth = this.props.subscriptions[0].state.dims.width - 100;
 
+  signOut = () => {
+    const {
+      navigation,
+      subscriptions: [{ resetState }]
+    } = this.props;
+    firebase
+      .database()
+      .ref()
+      .off();
+    resetState();
+    navigation.navigate(routes.home);
+  };
+
   render() {
-    const [appState] = this.props.subscriptions;
+    const {
+      navigation,
+      subscriptions: [appState]
+    } = this.props;
     return (
       <Wrapper>
-        <SavedMovieList dims={appState.state.dims} user={appState.state.user} />
+        <NavHeader
+          isStatic={false}
+          nav={navigation}
+          left={{
+            content: <Text>Home</Text>,
+            onPress: () => navigation.navigate(routes.home)
+          }}
+          right={{
+            content: <Text>Sign Out</Text>,
+            onPress: this.signOut
+          }}
+        />
+        <Spacer />
+        <SavedMovieList
+          dims={appState.state.dims}
+          user={appState.state.user}
+          getImageUrl={appState.getImageUrl}
+        />
 
         <Modal
           dims={appState.state.dims}

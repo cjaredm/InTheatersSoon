@@ -37,9 +37,8 @@ export default function MovieItem(props: Props) {
     color,
     dims
   } = props;
-  const poster = `${config.images.secure_base_url}${
-    config.images.poster_sizes[4]
-  }${poster_path}`;
+  const poster =
+    config.images.secure_base_url + config.images.poster_sizes[4] + poster_path;
 
   return (
     <Wrapper>

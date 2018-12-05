@@ -1,32 +1,25 @@
 import React from "react";
 import styled from "styled-components";
+import type { MovieType } from "../Results/MovieItem";
+import type { DIMS } from "../../appState";
 
 type Props = {
-  color: string,
-  title: any,
   backdrop: string,
-  dims: any,
-  id: any
+  movie: MovieType,
+  color: string,
+  dims: DIMS
 };
 
 export function SavedMovie(props: Props) {
-  const {
-    color: backgroundColor,
-    title,
-    id,
-    /*poster,*/
-    backdrop,
-    dims
-  } = props;
-
+  const { color: backgroundColor, movie, dims, backdrop } = props;
   const posterWidth = 65;
 
   return (
     <Wrapper backgroundColor={backgroundColor} width={dims.width}>
-      <Poster source={{ uri: backdrop }} alt="Movie Poster" key={id} />
+      <Poster source={{ uri: backdrop }} alt="Movie Poster" key={movie.id} />
       <TextContainer dimWidth={dims.width} posterWidth={posterWidth}>
-        <Title>{title}</Title>
-        <Date>2018-09-15</Date>
+        <Title>{movie.title}</Title>
+        <Date>{movie.release_date}</Date>
       </TextContainer>
     </Wrapper>
   );

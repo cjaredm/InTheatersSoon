@@ -50,8 +50,7 @@ class AddToCalendar extends React.Component<Props, State> {
     <View>
       <ModalText>Successfully Added:</ModalText>
       <Text>Title: {this.props.movie.title}</Text>
-      <Text>Date: {this.props.movie.releaseDate}</Text>
-      <Text>Alert: 9 AM</Text>
+      <Text>Date: {this.props.movie.release_date}</Text>
     </View>
   );
 
@@ -72,9 +71,10 @@ class AddToCalendar extends React.Component<Props, State> {
 
     return (
       <TabBottom color={color}>
-        <Date>{movie.releaseDate}</Date>
+        <Date>{movie.release_date}</Date>
         <AddButton onPress={() => this.saveMovie(movie)}>
-          <ButtonText>Add To Calendar</ButtonText>
+          {/* Make this change if we know the movie is already saved */}
+          <ButtonText>Get Notified</ButtonText>
         </AddButton>
         <ConfirmModal
           visible={this.state.showModal}
@@ -87,6 +87,7 @@ class AddToCalendar extends React.Component<Props, State> {
           transparent
         />
 
+        {/* Eww. Get rid of this success modal */}
         <Modal animationType="slide" transparent visible={showModal}>
           <ModalContainer modalWidth={modalWidth} dims={dims}>
             {error ? failureModalText : successModalText}
@@ -137,14 +138,14 @@ const AddButton = styled.TouchableHighlight`
   background-color: grey;
   border-radius: 10px;
   height: 30px;
-  margin-left: 20px;
-  margin-right: 20px;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
 `;
 
 const ButtonText = styled.Text`
   text-align: center;
   font-weight: bold;
-  width: 100%;
   color: white;
   line-height: 30px;
   font-size: 18px;

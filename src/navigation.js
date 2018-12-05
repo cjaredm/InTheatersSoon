@@ -42,7 +42,7 @@ export const RootNavigator = createSwitchNavigator(
       {
         [routes.login]: LoginScreen,
         [routes.savedMovies]: SettingsScreen,
-        [routes.accountSettings]: SettingsScreen
+        [routes.accountSettings]: SettingsScreen // TODO: Make this thing...
       },
       { initialRouteName: routes.login }
     )

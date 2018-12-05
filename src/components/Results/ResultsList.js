@@ -4,12 +4,14 @@ import styled from "styled-components";
 import { api } from "../../requests/http";
 import MovieItem from "./MovieItem";
 import { COLORS } from "../../styles/theme";
+import { AppContainer, subscribeTo } from "../../appState";
+import type { AppStateSubscription, TMDB_CONFIG } from "../../appState";
 
 type Props = {
+  subscriptions: AppStateSubscription,
   setError: Function,
   setTrailers: Function,
   navigation: Object,
-  isLoggedIn: boolean,
   dims: Object,
   error?: boolean
 };
@@ -18,10 +20,10 @@ type State = {
   page: null | number,
   isLoading: boolean,
   upcomingResults: Array<{}>,
-  TMDB_configuration: Object
+  TMDB_configuration: ?TMDB_CONFIG
 };
 
-export default class ResultsList extends React.Component<Props, State> {
+class ResultsList extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -29,24 +31,26 @@ export default class ResultsList extends React.Component<Props, State> {
       page: null,
       isLoading: true,
       upcomingResults: [],
-      TMDB_configuration: {}
+      TMDB_configuration: null
     };
   }
 
   componentDidMount() {
-    Promise.all([this.getConfig(), this.getUpcomingMovies()]).then(
-      ([TMDB_configuration, upcomingResults]) =>
-        this.setState({
-          TMDB_configuration,
-          upcomingResults
-        })
+    this.getConfig();
+    this.getUpcomingMovies().then(upcomingResults =>
+      this.setState({
+        upcomingResults
+      })
     );
   }
 
   getConfig = () =>
     api
       .configuration()
-      .then(configurations => configurations)
+      .then(TMDB_config => {
+        const [appState] = this.props.subscriptions;
+        appState.updateState({ TMDB_config });
+      })
       .catch(error => error);
 
   getUpcomingMovies = () =>
@@ -85,12 +89,19 @@ export default class ResultsList extends React.Component<Props, State> {
   };
 
   render() {
-    const { setTrailers, navigation, dims, isLoggedIn } = this.props;
-    const { TMDB_configuration } = this.state;
-
+    const {
+      setTrailers,
+      dims,
+      subscriptions: [appState]
+    } = this.props;
     return (
       <ScrollableList
-        data={this.state.results || this.state.upcomingResults}
+        data={
+          // TODO: Decide if I allow searching or not, this is because I used to allow it
+          appState.TMDB_config
+            ? this.state.results || this.state.upcomingResults
+            : []
+        }
         onEndReached={this.addNextPageOfUpcomingResults}
         keyExtractor={(item, index) => `${index}`}
         onEndReachedThreshold={3}
@@ -99,7 +110,7 @@ export default class ResultsList extends React.Component<Props, State> {
         renderItem={({ item }) => (
           <MovieItem
             movie={item}
-            config={TMDB_configuration}
+            state={appState.TMDB_config ? appState.TMDB_config : {}}
             getVideoUrl={setTrailers}
             color={item.index % 2 === 0 ? COLORS.primary : COLORS.secondary}
             dims={dims}
@@ -109,6 +120,8 @@ export default class ResultsList extends React.Component<Props, State> {
     );
   }
 }
+
+export default subscribeTo([AppContainer])(ResultsList);
 
 const ScrollableList = styled.FlatList`
   width: 100%;

@@ -6,6 +6,7 @@ import type { UserType } from "../../appState";
 
 const testMovie = {
   id: 1,
+  index: 0,
   title: `$Really Long Title To see how this wraps`,
   poster: "https://image.tmdb.org/t/p/w185/AkJQpZp9WoNdj7pLYSj1L0RcMMN.jpg",
   backdrop: "https://image.tmdb.org/t/p/w300/5qxePyMYDisLe8rJiBYX8HKEyv2.jpg"
@@ -13,7 +14,8 @@ const testMovie = {
 
 type Props = {
   dims: any,
-  user: UserType
+  user: UserType,
+  getImageUrl: Function
 };
 
 export function SavedMovieList(props: Props) {
@@ -25,15 +27,18 @@ export function SavedMovieList(props: Props) {
       onEndReachedThreshold={3}
       data={movies}
       keyExtractor={(item, index) => `${index}`}
-      renderItem={({ item }) => {
-        return (
-          <SavedMovie
-            {...item}
-            color={item.id % 2 === 0 ? COLORS.primary : COLORS.secondary}
-            dims={props.dims}
-          />
-        );
-      }}
+      renderItem={({ item: movie, index }) => (
+        <SavedMovie
+          movie={movie}
+          backdrop={props.getImageUrl({
+            type: "backdrop",
+            sizeIndex: 1,
+            path: movie.backdrop_path
+          })}
+          color={index % 2 === 0 ? COLORS.primary : COLORS.secondary}
+          dims={props.dims}
+        />
+      )}
     />
   );
 }
