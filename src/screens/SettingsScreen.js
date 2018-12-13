@@ -1,14 +1,19 @@
 import React from "react";
 import { View } from "react-native";
-import { SavedMovieList } from "../components/SavedMovies/SavedMoviesList";
 import styled from "styled-components";
-import { withAppState } from "../app-state";
-import { ScreenOuter } from "../styles/layouts";
+import type { NavigationScreenProp } from "react-navigation";
+import { AppContainer, subscribeTo } from "../appState";
+import { SavedMovieList } from "../components/SavedMovies/SavedMoviesList";
+import { ScreenOuter, Spacer } from "../styles/layouts";
+import type { AppStateSubscription } from "../appState";
+import { NavHeader } from "../components/NavHeader";
+import { Text } from "../components/Text";
+import { routes } from "../navigation";
+import firebase from "../firebase";
 
 type Props = {
-  appState: {
-    dims: Object
-  }
+  navigation: NavigationScreenProp<{}>,
+  subscriptions: AppStateSubscription
 };
 
 type State = {
@@ -18,28 +23,80 @@ type State = {
 };
 
 class SettingsScreen extends React.Component<Props, State> {
+  // TODO: Fix the header on this so it doesn't show.
   state = {
     error: null,
     loading: false,
     showModal: false
   };
 
-  modalWidth = this.props.appState.dims.width - 100;
+  async componentDidMount(): void {
+    const [
+      {
+        state: { user },
+        updateState
+      }
+    ] = this.props.subscriptions;
+    await firebase
+      .database()
+      .ref(`/users/${user.id}/movies`)
+      .on("value", snapShot => {
+        const movies = Object.values(snapShot.val());
+        snapShot.val() && updateState({ user: { ...user, movies } });
+      });
+  }
+
+  // TODO: Fix this nasty dims thing, everywhere
+  modalWidth = this.props.subscriptions[0].state.dims.width - 100;
+
+  signOut = () => {
+    const {
+      navigation,
+      subscriptions: [{ resetState }]
+    } = this.props;
+    firebase
+      .database()
+      .ref()
+      .off();
+    resetState();
+    navigation.navigate(routes.home);
+  };
 
   render() {
+    const {
+      navigation,
+      subscriptions: [appState]
+    } = this.props;
     return (
       <Wrapper>
-        <SavedMovieList dims={this.props.appState.dims} />
+        <NavHeader
+          isStatic={false}
+          nav={navigation}
+          left={{
+            content: <Text>Home</Text>,
+            onPress: () => navigation.navigate(routes.home)
+          }}
+          right={{
+            content: <Text>Sign Out</Text>,
+            onPress: this.signOut
+          }}
+        />
+        <Spacer />
+        <SavedMovieList
+          dims={appState.state.dims}
+          user={appState.state.user}
+          getImageUrl={appState.getImageUrl}
+        />
 
         <Modal
-          dims={this.props.appState.dims}
+          dims={appState.state.dims}
           modalWidth={this.modalWidth}
           visible={this.state.showModal}
           animationType="slide"
           transparent
         >
           <View>
-            <ModalText>{modalText}</ModalText>
+            <ModalText>This is a modal of some kind</ModalText>
             <ModalButton onPress={this.closeModal}>
               <ModalCloseText>CLOSE</ModalCloseText>
             </ModalButton>
@@ -50,7 +107,7 @@ class SettingsScreen extends React.Component<Props, State> {
   }
 }
 
-export default withAppState({})(SettingsScreen);
+export default subscribeTo([AppContainer])(SettingsScreen);
 
 const Wrapper = styled(ScreenOuter).attrs({ fullscreen: true })`
   width: 100%;

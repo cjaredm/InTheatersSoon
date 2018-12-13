@@ -16,7 +16,7 @@ const titleTransformer = title => title.replace(/ +/g, "%20");
 export const api = {
   async configuration() {
     return await fetch(`${urls.TMDB_config}?${urls.TMDB_apiKey}`).then(
-      response => response.json()
+      async response => await response.json()
     );
   },
   async upcoming(page = 1) {

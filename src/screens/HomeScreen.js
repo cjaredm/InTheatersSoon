@@ -2,16 +2,19 @@
 import React from "react";
 import styled from "styled-components";
 import type { NavigationScreenProp } from "react-navigation";
-import { withAppState } from "../app-state";
-import type { AppState } from "../app-state";
+import type { AppState } from "../appState";
+import { AppContainer, subscribeTo } from "../appState";
 import { api } from "../requests/http";
 import ResultsList from "../components/Results/ResultsList";
 import MovieTrailer from "../components/Results/MovieTrailer";
 import { ScreenOuter } from "../styles/layouts";
+import { NavHeader } from "../components/NavHeader";
+import { Text } from "../components/Text";
+import { routes } from "../navigation";
 
 type Props = {
-  appState: AppState,
-  navigation: NavigationScreenProp<{}>
+  navigation: NavigationScreenProp<{}>,
+  subscriptions: Array<{ state: AppState, updateState: Function }>
 };
 
 type State = {
@@ -44,16 +47,36 @@ class HomeScreen extends React.Component<Props, State> {
   unsetTrailers = () => this.setState({ trailers: null });
 
   render() {
-    const { setError, setTrailers } = this;
     const {
-      navigation,
-      appState: { dims, user }
-    } = this.props;
+      setError,
+      setTrailers,
+      props: {
+        navigation: nav,
+        subscriptions: [
+          {
+            state: { dims, user }
+          }
+        ]
+      }
+    } = this;
+
+    const content = <Text>{user ? "Saved" : "Login"}</Text>;
+    const destination = user ? routes.savedMovies : routes.login;
 
     return (
-      <ScreenOuter fullscreen>
+      <ScreenOuter>
+        <NavHeader
+          isStatic={false}
+          nav={nav}
+          left={{}}
+          right={{
+            content,
+            onPress: () => nav.navigate(destination)
+          }}
+        />
+        <Title>Reel Time Movies</Title>
         <ResultsList
-          navigation={navigation}
+          navigation={nav}
           setError={setError}
           setTrailers={setTrailers}
           error={this.state.error}
@@ -82,7 +105,14 @@ class HomeScreen extends React.Component<Props, State> {
   }
 }
 
-export default withAppState({})(HomeScreen);
+export default subscribeTo([AppContainer])(HomeScreen);
+
+const Title = styled(Text).attrs({
+  sizeType: "heading",
+  textAlign: "center"
+})`
+  margin-bottom: 10px;
+`;
 
 const ModalContainer = styled.Modal`
   width: 100%;

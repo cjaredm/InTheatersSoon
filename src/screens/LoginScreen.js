@@ -1,26 +1,39 @@
 import React from "react";
-import { View, Keyboard } from "react-native";
+import { Keyboard } from "react-native";
+import type { NavigationScreenProp } from "react-navigation";
 import styled from "styled-components";
+import { AppContainer, subscribeTo } from "../appState";
+import type { AppStateSubscription } from "../appState";
 import firebase, { auth } from "../firebase";
-import { withAppState } from "../app-state";
-import { ScreenOuter } from "../styles/layouts";
+import { ScreenOuter, Spacer } from "../styles/layouts";
 import { Text } from "../components/Text";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
-import ResultsHeader from "../components/Results/ResultsHeader";
+import { ConfirmModal } from "../components/modals";
+import { routes } from "../navigation";
+import { NavHeader } from "../components/NavHeader";
 
 type Props = {
-  setUser: any,
-  navigation: Object,
-  appState: {
-    dims: Object
-  }
+  navigation: NavigationScreenProp<{}>,
+  subscriptions: AppStateSubscription
 };
 
-class LoginScreen extends React.Component<Props> {
+class LoginScreen extends React.Component<Props, {}> {
+  static navigationOptions = ({ navigation }) => ({
+    header: () => (
+      <NavHeader
+        nav={navigation}
+        left={{
+          content: <Text>Back</Text>,
+          onPress: () => navigation.navigate(routes.home)
+        }}
+        right={{}}
+      />
+    )
+  });
   state = {
-    email: "email1@email.com",
-    password: "12345678",
+    email: "",
+    password: "",
     error: null,
     loading: false,
     showModal: false
@@ -28,49 +41,69 @@ class LoginScreen extends React.Component<Props> {
 
   setEmail = email => this.setState({ email });
   setPassword = password => this.setState({ password });
-  closeModal = () => this.setState({ showModal: false, error: "" });
+  closeModal = () => {
+    this.setState({ showModal: false, error: "" });
+    this.props.navigation.navigate(routes.savedMovies);
+  };
 
-  onLoginPress = () => {
+  onLoginPress = async () => {
+    const [appState] = this.props.subscriptions;
     const { email, password } = this.state;
     this.setState({ loading: true });
 
-    auth
-      .signInWithEmailAndPassword(email, password)
-      .then(response => {
-        console.log(response.user);
-        this.props.setUser(response.user);
-        this.setState({ loading: false, showModal: true });
-      })
-      .catch(error => {
-        console.log(error);
-        this.setState({ error, loading: false, showModal: true });
-      });
+    try {
+      const { user } = await auth.signInWithEmailAndPassword(email, password);
+      const snapShot = await firebase
+        .database()
+        .ref(`/users/${user.uid}`)
+        .once("value");
+      const data = snapShot.val() && snapShot.val();
 
+      appState.updateState({
+        user: {
+          id: user.uid,
+          email: user.email,
+          refreshToken: user.refreshToken,
+          ...data,
+          movies: Object.values(data.movies)
+        }
+      });
+      this.setState({ loading: false, showModal: true });
+    } catch (errors) {
+      // TODO ERROR HANDLING Component (ErrorList)
+      this.setState({ error: errors.message, loading: false, showModal: true });
+    }
     Keyboard.dismiss();
   };
 
-  onCreateAccountPress = () => {
+  onCreateAccountPress = async () => {
+    const [appState] = this.props.subscriptions;
     const { email, password } = this.state;
     this.setState({ loading: true });
 
     auth
       .createUserWithEmailAndPassword(email, password)
-      .then(newUser => {
+      .then(({ user }) => {
+        const initialUser = {
+          email: user.email,
+          id: user.uid,
+          movies: [{ id: 1000 }]
+        };
+
         firebase
           .database()
-          .ref("userProfile")
-          .child(newUser.user.uid)
-          .set({
-            email: this.state.email
+          .ref(`/users/${user.uid}`)
+          .set(initialUser)
+          .then(error => {
+            if (error) throw new Error(error);
           });
+
         this.setState({ loading: false, showModal: true });
-        this.props.setUser({
-          id: newUser.user.uid,
-          email: this.state.email
+        appState.updateState({
+          user: initialUser
         });
       })
       .catch(error => {
-        console.log(error.message);
         this.setState({
           error: error.message,
           loading: false,
@@ -81,17 +114,19 @@ class LoginScreen extends React.Component<Props> {
     Keyboard.dismiss();
   };
 
-  modalWidth = this.props.appState.dims.width - 100;
-
   render() {
+    const [appState] = this.props.subscriptions;
     const modalText = this.state.error
       ? this.state.error
       : "Ta'Done!! Told you it would be easy. Now go save some movies.";
 
     return (
-      <Wrapper>
-        <ResultsHeader isLoggedIn={false} navigation={this.props.navigation} />
-        <View>
+      <ScreenOuter>
+        <Spacer />
+        <Title>Reel TIme Movies</Title>
+        <Spacer />
+
+        <Wrapper>
           <Header>
             We'd love to send you notifications when your saved movies are in
             theaters soon.
@@ -100,108 +135,87 @@ class LoginScreen extends React.Component<Props> {
             Little thing though, you gotta setup an account. Super easy, barely
             an inconvenience.
           </Description>
-        </View>
 
-        <View>
+          <Spacer />
+
           <Input
-            onTextChange={value => this.setEmail(value)}
+            name="email"
+            keyboardType="email-address"
+            textContentType="emailAddress"
+            onChangeText={this.setEmail}
             placeholder="Email..."
             value={this.state.email}
           />
           <Input
-            onTextChange={value => this.setPassword(value)}
+            name="password"
+            textContentType="password"
+            onChangeText={this.setPassword}
             placeholder="Password..."
             value={this.state.password}
           />
-          <Button
-            accessibilityLabel="Create Account"
-            onPress={this.onLoginPress}
-          >
-            Login
-          </Button>
-          <Button
-            accessibilityLabel="Create Account"
-            onPress={this.onCreateAccountPress}
-          >
-            Create Account
-          </Button>
-        </View>
 
-        <Modal
-          dims={this.props.appState.dims}
-          modalWidth={this.modalWidth}
+          <ButtonContainer>
+            <LoginButton accessibilityLabel="Login" onPress={this.onLoginPress}>
+              Login
+            </LoginButton>
+            <LoginButton
+              leftPad
+              accessibilityLabel="Create Account"
+              onPress={this.onCreateAccountPress}
+            >
+              Create Account
+            </LoginButton>
+          </ButtonContainer>
+        </Wrapper>
+
+        <ConfirmModal
           visible={this.state.showModal}
+          dims={appState.state.dims}
           animationType="slide"
+          title="Hooray!"
+          text={modalText}
+          buttonText="CLOSE"
+          closeModal={this.closeModal}
           transparent
-        >
-          <View>
-            <ModalText>{modalText}</ModalText>
-            <ModalButton onPress={this.closeModal}>
-              <ModalCloseText>CLOSE</ModalCloseText>
-            </ModalButton>
-          </View>
-        </Modal>
-      </Wrapper>
+        />
+      </ScreenOuter>
     );
   }
 }
 
-export default withAppState({})(LoginScreen);
+export default subscribeTo([AppContainer])(LoginScreen);
 
-const Wrapper = styled(ScreenOuter).attrs({ fullscreen: true })`
-  width: 100%;
-  padding-top: 30px;
-  position: relative;
-  align-items: center;
-  justify-content: space-between;
-  flex: 1;
+const Wrapper = styled.View`
+  padding: 0 20px;
+`;
+
+const Title = styled(Text).attrs({
+  sizeType: "heading",
+  textAlign: "center"
+})`
+  margin-bottom: 10px;
 `;
 
 const Header = styled(Text)`
   font-size: 20px;
   text-align: center;
-  width: 300px;
 `;
 
 const Description = styled(Text)`
   font-size: 16px;
   text-align: center;
-  width: 320px;
   margin-bottom: 20px;
 `;
 
-const Modal = styled.Modal`
-  width: this.modalWidth;
-  min-height: 150px;
-  max-height: 220px;
-  margin: 0 auto;
-  padding: 30px;
-  background-color: white;
-  border-radius: 10px;
-  border-width: 1px;
-  border-color: black;
-  position: absolute;
-  top: ${({ dims }) => dims.height / 2 - 110}px;
-  left: ${({ dims, modalWidth }) => dims.width / 2 - modalWidth / 2}px;
-`;
-
-const ModalButton = styled.TouchableHighlight`
-  background-color: gold;
-  border-radius: 10px;
-  height: 50px;
+const ButtonContainer = styled.View`
   width: 100%;
-  margin: 20px 0;
+  margin-top: auto;
+  flex: 1;
+  justify-content: space-between;
+  flex-direction: row;
 `;
 
-const ModalText = styled.Text`
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 10px;
-`;
-
-const ModalCloseText = styled.Text`
-  color: white;
-  font-size: 20px;
-  text-align: center;
-  line-height: 50px;
+const LoginButton = styled(Button)`
+  flex: 1;
+  ${({ leftPad }) => (leftPad ? "margin-left: 2px;" : "margin-right: 2px;")};
 `;

@@ -12,6 +12,7 @@ type Props = {
 export default function ResultsHeader(props: Props) {
   const { navigation, isLoggedIn, isHomeScreen } = props;
 
+  // ! TODO: Change these to icons
   const pageDetails = () => {
     switch (true) {
       case !isHomeScreen:
@@ -19,14 +20,14 @@ export default function ResultsHeader(props: Props) {
       case isLoggedIn && isHomeScreen:
         return { path: routes.savedMovies, text: "Settings" };
       case !isLoggedIn && isHomeScreen:
-        return { path: routes.login, text: "Login / Sign Up" };
+        return { path: routes.login, text: "Login" };
       default:
-        return { path: routes.login, text: "Login / Sign Up" };
+        return { path: routes.login, text: "Login" };
     }
   };
 
   return (
-    <Wrapper>
+    <Wrapper pad={!isHomeScreen}>
       <Title>Reel Time Movies</Title>
       <Button onPress={() => navigation.navigate(pageDetails().path)}>
         <Text sizeType="details">{pageDetails().text}</Text>
@@ -41,19 +42,19 @@ ResultsHeader.defaultProps = {
 
 const Wrapper = styled.View`
   position: relative;
-  padding-top: 25px;
+  padding-top: 20px;
+  ${({ pad }) => (pad ? "margin: 0 20px;" : "margin: 0;")};
 `;
 
 const Title = styled(Text).attrs({
   sizeType: "heading",
   textAlign: "center"
 })`
-  margin-top: 25px;
   margin-bottom: 10px;
 `;
 
 const Button = styled.TouchableHighlight`
   position: absolute;
-  top: 25px;
+  top: 0;
   right: 0;
 `;
