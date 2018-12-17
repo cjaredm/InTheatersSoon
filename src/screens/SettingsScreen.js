@@ -5,7 +5,7 @@ import type { NavigationScreenProp } from "react-navigation";
 import { AppContainer, subscribeTo } from "../appState";
 import { SavedMovieList } from "../components/SavedMovies/SavedMoviesList";
 import { ScreenOuter, Spacer } from "../styles/layouts";
-import type { AppStateSubscription } from "../appState";
+import type { SubscriptionTypes } from "../appState";
 import { NavHeader } from "../components/NavHeader";
 import { Text } from "../components/Text";
 import { routes } from "../navigation";
@@ -13,7 +13,7 @@ import firebase from "../firebase";
 
 type Props = {
   navigation: NavigationScreenProp<{}>,
-  subscriptions: AppStateSubscription
+  subscriptions: SubscriptionTypes
 };
 
 type State = {

@@ -1,6 +1,7 @@
 import React from "react";
 import { TouchableHighlight } from "react-native";
 import styled from "styled-components";
+import type { AppStateSubscription } from "../../appState";
 import AddToCalendar from "../AddToCalendar";
 
 export type MovieType = {
@@ -23,17 +24,19 @@ export type MovieType = {
 
 type Props = {
   config: { images: { secure_base_url: string, poster_sizes: Array<string> } },
+  appState: AppStateSubscription,
   getVideoUrl: Function,
+  movie: MovieType,
   color: string,
-  dims: Object,
-  movie: MovieType
+  dims: Object
 };
 
 export default function MovieItem(props: Props) {
   const {
     movie: { title, release_date, poster_path, id },
-    config,
     getVideoUrl,
+    appState,
+    config,
     color,
     dims
   } = props;
@@ -56,6 +59,7 @@ export default function MovieItem(props: Props) {
         </ViewRelative>
       </TouchableHighlight>
       <AddToCalendar
+        appState={appState}
         releaseDate={release_date}
         movie={props.movie}
         title={title}

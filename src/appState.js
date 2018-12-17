@@ -66,12 +66,14 @@ export class AppContainer extends Container<AppState> {
   resetState = () => this.setState(this.initialState);
 }
 
-export type AppStateSubscription = Array<{
+export type AppStateSubscription = {
   state: AppState,
   updateState: Function,
   getImageUrl: Function,
   resetState: Function
-}>;
+};
+
+export type SubscriptionTypes = Array<AppStateSubscription>;
 
 export type Subscription = {
   state: { [string]: any },

@@ -3,7 +3,7 @@ import { Keyboard } from "react-native";
 import type { NavigationScreenProp } from "react-navigation";
 import styled from "styled-components";
 import { AppContainer, subscribeTo } from "../appState";
-import type { AppStateSubscription } from "../appState";
+import type { SubscriptionTypes } from "../appState";
 import firebase, { auth } from "../firebase";
 import { ScreenOuter, Spacer } from "../styles/layouts";
 import { Text } from "../components/Text";
@@ -15,7 +15,7 @@ import { NavHeader } from "../components/NavHeader";
 
 type Props = {
   navigation: NavigationScreenProp<{}>,
-  subscriptions: AppStateSubscription
+  subscriptions: SubscriptionTypes
 };
 
 class LoginScreen extends React.Component<Props, {}> {

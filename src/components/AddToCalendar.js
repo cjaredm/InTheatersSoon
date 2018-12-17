@@ -6,10 +6,9 @@ import type { AppStateSubscription } from "../appState";
 import firebase from "../firebase";
 import type { MovieType } from "./Results/MovieItem";
 import { ConfirmModal } from "./modals";
-import { AppContainer, subscribeTo } from "../appState";
 
 type Props = {
-  subscriptions: AppStateSubscription,
+  appState: AppStateSubscription,
   movie: MovieType,
   color: string,
   dims: any
@@ -20,18 +19,16 @@ type State = {
   error: any
 };
 
-class AddToCalendar extends React.Component<Props, State> {
+export default class AddToCalendar extends React.Component<Props, State> {
   state = {
     showModal: false,
     error: null
   };
 
   saveMovie = (movie: Object) => {
-    const [
-      {
-        state: { user }
-      }
-    ] = this.props.subscriptions;
+    const {
+      state: { user }
+    } = this.props.appState;
 
     if (!user) {
       this.setState({ error: "Sorry, you are not logged in!" });
@@ -73,17 +70,17 @@ class AddToCalendar extends React.Component<Props, State> {
       <TabBottom color={color}>
         <Date>{movie.release_date}</Date>
         <AddButton onPress={() => this.saveMovie(movie)}>
-          {/* Make this change if we know the movie is already saved */}
+          {/* TODO: Make this change if we know the movie is already saved */}
           <ButtonText>Get Notified</ButtonText>
         </AddButton>
         <ConfirmModal
-          visible={this.state.showModal}
-          dims={dims}
-          animationType="slide"
-          title="Hooray!"
-          text="This is the modal text."
-          buttonText="CLOSE"
           closeModal={() => this.setState({ showModal: false })}
+          visible={this.state.showModal}
+          text="This is the modal text."
+          animationType="slide"
+          buttonText="CLOSE"
+          title="Hooray!"
+          dims={dims}
           transparent
         />
 
@@ -100,8 +97,6 @@ class AddToCalendar extends React.Component<Props, State> {
     );
   }
 }
-
-export default subscribeTo([AppContainer])(AddToCalendar);
 
 const ModalContainer = styled.View`
   width: ${({ modalWidth }) => modalWidth};
@@ -153,11 +148,11 @@ const ButtonText = styled.Text`
 
 const TabBottom = styled.View`
   width: 100%;
-  height: 70;
+  height: 70px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  border-bottom-left-radius: 10;
-  border-bottom-right-radius: 10;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
   overflow: hidden;
   background-color: ${({ color }) => color};
 `;
@@ -165,12 +160,12 @@ const TabBottom = styled.View`
 const ModalText = styled.Text`
   font-weight: bold;
   text-align: center;
-  margin-bottom: 10;
+  margin-bottom: 10px;
 `;
 
 const ModalCloseText = styled.Text`
   color: white;
-  font-size: 20;
+  font-size: 20px;
   text-align: center;
-  line-height: 50;
+  line-height: 50px;
 `;

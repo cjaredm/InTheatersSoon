@@ -2,7 +2,7 @@
 import React from "react";
 import styled from "styled-components";
 import type { NavigationScreenProp } from "react-navigation";
-import type { AppState } from "../appState";
+import type { SubscriptionTypes } from "../appState";
 import { AppContainer, subscribeTo } from "../appState";
 import { api } from "../requests/http";
 import ResultsList from "../components/Results/ResultsList";
@@ -14,7 +14,7 @@ import { routes } from "../navigation";
 
 type Props = {
   navigation: NavigationScreenProp<{}>,
-  subscriptions: Array<{ state: AppState, updateState: Function }>
+  subscriptions: SubscriptionTypes
 };
 
 type State = {
@@ -52,13 +52,12 @@ class HomeScreen extends React.Component<Props, State> {
       setTrailers,
       props: {
         navigation: nav,
-        subscriptions: [
-          {
-            state: { dims, user }
-          }
-        ]
+        subscriptions: [appState]
       }
     } = this;
+    const {
+      state: { dims, user }
+    } = appState;
 
     const content = <Text>{user ? "Saved" : "Login"}</Text>;
     const destination = user ? routes.savedMovies : routes.login;
@@ -76,6 +75,7 @@ class HomeScreen extends React.Component<Props, State> {
         />
         <Title>Reel Time Movies</Title>
         <ResultsList
+          appState={appState}
           navigation={nav}
           setError={setError}
           setTrailers={setTrailers}
