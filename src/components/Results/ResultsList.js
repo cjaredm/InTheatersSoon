@@ -84,12 +84,6 @@ export default class ResultsList extends React.Component<Props, State> {
   render() {
     const { setTrailers, dims, appState } = this.props;
 
-    console.log(
-      "results list",
-      appState.TMDB_config ? this.state.upcomingResults : [],
-      this.state
-    );
-
     return (
       <ScrollableList
         data={
